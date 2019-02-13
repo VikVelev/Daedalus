@@ -1,0 +1,1 @@
+qmake -o Makefile make.pro && make
