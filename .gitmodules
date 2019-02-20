@@ -1,0 +1,3 @@
+[submodule "3DMNN"]
+	path = 3DMNN
+	url = https://github.com/VikVelev/3DMNN
