@@ -1,1 +1,3 @@
-qmake -o Makefile make.pro && make
+rm ./build/*
+qmake -o Makefile make.pro
+make
