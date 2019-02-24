@@ -1,11 +1,23 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { observer } from 'mobx-react';
+import Viewport from '../viewport/Viewport';
+import MenuFrame from '../components/MenuFrame.jsx'
 
-export class Main extends Component {
+@observer
+class Main extends Component {
+
+    mainState = {
+		loading: {
+			isLoading: false,
+			progress: 100,
+		},
+	}
+
     render() {
         return (
-            <div className="mainScreen">
-                HUQT MI QNKO
-            </div>
+            <MenuFrame className="mainScreen">
+                <Viewport/>
+            </MenuFrame>
         );
     }
 }

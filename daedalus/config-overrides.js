@@ -1,10 +1,8 @@
 const {
     override,
     addDecoratorsLegacy,
-    disableEsLint,
-    addBundleVisualizer,
-    addWebpackAlias,
-    adjustWorkbox
+    //disableEsLint,
+    //see more functions in the customize-cra repo in github
   } = require("customize-cra");
 
 module.exports = override(addDecoratorsLegacy());

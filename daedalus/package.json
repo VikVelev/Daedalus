@@ -12,7 +12,8 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.5",
     "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.85.0"
+    "semantic-ui-react": "^0.85.0",
+    "three": "^0.101.1"
   },
   "scripts": {
     "dev": "PORT=8888 nf start",
@@ -35,6 +36,7 @@
     "@babel/plugin-proposal-decorators": "^7.3.0",
     "customize-cra": "^0.2.11",
     "electron": "^4.0.5",
+    "electron-react-devtools": "^0.5.3",
     "foreman": "^3.0.1",
     "mobx-react-devtools": "^6.0.3",
     "react-app-rewire-mobx": "^1.0.9",

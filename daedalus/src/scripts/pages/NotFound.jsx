@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
+import { observer } from 'mobx-react';
 
-export class NotFound extends Component {
+@observer
+class NotFound extends Component {
     render() {
         return (
             <div>
