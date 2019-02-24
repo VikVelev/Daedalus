@@ -17,7 +17,7 @@
   },
   "scripts": {
     "dev": "PORT=8888 nf start",
-    "start": "react-app-rewired start",
+    "start": "BROWSER='null' react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-rewired eject",
