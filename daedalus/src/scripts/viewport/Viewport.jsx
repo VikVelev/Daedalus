@@ -36,7 +36,7 @@ class Viewport extends Component {
 		this.controls.dampingFactor = 0.3; // friction
 		this.controls.rotateSpeed = 0.3; // mouse sensitivity
 
-		console.log(this.controls);
+		//Incorporate TransformControls in the future
 
 		//Configure Renderer
 		this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -97,8 +97,8 @@ class Viewport extends Component {
 
 	load3DModel(model) {
 		//The cube is a test model
-		let pc = new PointCloud("models/test.ply");
-		pc.loadFromFile(this.scene);
+		let pc = new PointCloud("models/cube.obj", this.scene);
+		pc.load();
 	}
 
 	onWindowResize = () => {

@@ -180,7 +180,7 @@ class PLYLoader {
 		}
 
 		function parseASCIINumber( n, type ) {
-
+			// eslint-disable-next-line
 			switch ( type ) {
 
 				case 'char': case 'uchar': case 'short': case 'ushort': case 'int': case 'uint':
@@ -385,9 +385,10 @@ class PLYLoader {
 		}
 
 		function binaryRead( dataview, at, type, little_endian ) {
-
+			// eslint-disable-next-line
 			switch ( type ) {
 
+				
 				// corespondences for non-specific length types here match rply:
 				case 'int8':		case 'char':	 return [ dataview.getInt8( at ), 1 ];
 				case 'uint8':		case 'uchar':	 return [ dataview.getUint8( at ), 1 ];

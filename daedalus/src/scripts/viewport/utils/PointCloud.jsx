@@ -1,17 +1,31 @@
 
 import PLYLoader from './PLYLoader.jsx';
-import { Mesh, SphereGeometry, CubeGeometry, Group, MeshLambertMaterial } from 'three';
+import MTLLoader from './MTLLoader.jsx';
+import { 
+    MeshLambertMaterial,
+    SphereGeometry, 
+    //CubeGeometry, 
+    Group, 
+    Mesh, 
+} from 'three';
+
+let THREE = require('three');
+
+let OBJLoader2 = require('./OBJLoader')
+OBJLoader2(THREE, MTLLoader)
+//This should come in use when I get to reading IO, Importing and exporting files;
+// eslint-disable-next-line
+let electron, rie;
 
 if (window.require !== undefined) {
-    const rie = true; //Running In Electron (RIE/rie)
-    const electron = window.require("electron");
+    rie = true; //Running In Electron (RIE/rie)
+    electron = window.require("electron");
     console.log("Running within Electron...");
 } else {
-    const rie = false;
-    const electron = null;
+    rie = false;
+    electron = null;
     console.log("Running within web.");
 }
-
 
 export default class PointCloud {
     
@@ -22,37 +36,85 @@ export default class PointCloud {
 
     vertices = []; // plain [[x,y,z],...] array
     geometry = {}; //three js object (probably buffered geometry)
+    scene_objects = [];
     sphere_geometry = new Group();
-    loader = new PLYLoader();
+    loader = {} // a loader selected dynamically depending on the file you wanna load
+    type = "" //obj or ply
 
-    constructor(filename){
+    constructor(filename, scene){
         this.filename = filename;
-        console.log(this.loader);
+        this.scene = scene;
+
+        this.type = this.filename.slice(-3);
+
+        if(this.type === "obj") {
+            this.loader = new THREE.OBJLoader2();
+            this.loader.vertexOnlyMode = true;
+            this.loader.logging.debug = true;
+
+        } else if(this.type === "ply") {
+            this.loader = new PLYLoader();
+        }
     }
 
-    loadFromFile(scene) {
+    callbackOnLoad = (data) => {
+        if (this.type === "obj") {
 
-        this.loader.load(this.filename, ( geometry ) => {
-            this.geometry = geometry;
+            let object = data.detail.loaderRootNode;
+            this.scene.add(object);
+            this.scene_objects.push(object);
+            console.log(object);
 
-            scene.add(this.convertToSphereCloud());
-        })
+            if(object.children.length < 1) {
+                let pc = this.convertToSphereCloud(this.loader.vertexArray);
+                this.scene.add(pc);
+                this.scene_objects.push(pc);
+            }
+            
+
+        } else if (this.type === "ply") {
+
+            this.geometry = data;
+
+            let pc = this.convertToSphereCloud(this.vertices);
+            this.scene.add(pc);
+            this.scene_objects.push(pc);
+        }
     }
 
-    convertToSphereCloud() {
+    load = () => {
+        if(this.type === "ply") {
+            this.loader.load(this.filename, this.callbackOnLoad);
+        } else if (this.type === "obj") {
+            //TODO figure out how to load the fucking OBJ
+            this.loader.load(this.filename, this.callbackOnLoad, null, null, null, false)
+        }
+    }
 
-        for (let i = 0; i < this.geometry.attributes.position.array.length; i += 3) {
-            this.vertices.push([
-                this.geometry.attributes.position.array[i + 0], 
-                this.geometry.attributes.position.array[i + 1], 
-                this.geometry.attributes.position.array[i + 2]
+    plyGeometryToVertices(geometry) {
+
+        let vertices = []
+
+        for (let i = 0; i < geometry.attributes.position.array.length; i += 3) {
+            vertices.push([
+                geometry.attributes.position.array[i + 0], 
+                geometry.attributes.position.array[i + 1], 
+                geometry.attributes.position.array[i + 2]
             ]);
         }
 
-        
-        this.vertices.forEach(point => {
+        return vertices;
+    }
+
+    convertToSphereCloud(vertices) {
+
+        if (this.type === "ply") {
+            this.vertices = vertices = this.plyGeometryToVertices(this.geometry); //wow what
+        }
+
+        vertices.forEach(point => {
             
-            //TODO: Customization of point -> sphere/cube/prism w/e;
+            //TODO: Customization of point visualization -> sphere/cube/prism w/e;
             let geometry = new SphereGeometry(1.2, 8, 8);
             let material = new MeshLambertMaterial({ color: 0x0055ff });
 
