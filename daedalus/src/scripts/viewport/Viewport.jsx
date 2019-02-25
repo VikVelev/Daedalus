@@ -97,8 +97,7 @@ class Viewport extends Component {
 
 	load3DModel(model) {
 		//The cube is a test model
-		let pc = new PointCloud();
-
+		let pc = new PointCloud("models/test.ply");
 		pc.loadFromFile(this.scene);
 	}
 
