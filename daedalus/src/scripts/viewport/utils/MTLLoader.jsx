@@ -28,9 +28,9 @@ class MTLLoader {
 	 */
 	load(url, onLoad, onProgress, onError) {
 
-		var scope = this;
+		let scope = this;
 
-		var loader = new THREE.FileLoader(this.manager);
+		let loader = new THREE.FileLoader(this.manager);
 		loader.setPath(this.path);
 		loader.load(url, function (text) {
 
@@ -107,14 +107,14 @@ class MTLLoader {
 	 */
 	parse(text) {
 
-		var lines = text.split('\n');
-		var info = {};
-		var delimiter_pattern = /\s+/;
-		var materialsInfo = {};
+		let lines = text.split('\n');
+		let info = {};
+		let delimiter_pattern = /\s+/;
+		let materialsInfo = {};
 
-		for (var i = 0; i < lines.length; i++) {
+		for (let i = 0; i < lines.length; i++) {
 
-			var line = lines[i];
+			let line = lines[i];
 			line = line.trim();
 
 			if (line.length === 0 || line.charAt(0) === '#') {
@@ -124,12 +124,12 @@ class MTLLoader {
 
 			}
 
-			var pos = line.indexOf(' ');
+			let pos = line.indexOf(' ');
 
-			var key = (pos >= 0) ? line.substring(0, pos) : line;
+			let key = (pos >= 0) ? line.substring(0, pos) : line;
 			key = key.toLowerCase();
 
-			var value = (pos >= 0) ? line.substring(pos + 1) : '';
+			let value = (pos >= 0) ? line.substring(pos + 1) : '';
 			value = value.trim();
 
 			if (key === 'newmtl') {
@@ -143,7 +143,7 @@ class MTLLoader {
 
 				if (key === 'ka' || key === 'kd' || key === 'ks') {
 
-					var ss = value.split(delimiter_pattern, 3);
+					let ss = value.split(delimiter_pattern, 3);
 					info[key] = [parseFloat(ss[0]), parseFloat(ss[1]), parseFloat(ss[2])];
 
 				} else {
@@ -156,7 +156,7 @@ class MTLLoader {
 
 		}
 
-		var materialCreator = new MaterialCreator(this.texturePath || this.path, this.materialOptions);
+		let materialCreator = new MaterialCreator(this.texturePath || this.path, this.materialOptions);
 		materialCreator.setCrossOrigin(this.crossOrigin);
 		materialCreator.setManager(this.manager);
 		materialCreator.setMaterials(materialsInfo);
@@ -207,23 +207,23 @@ class MaterialCreator {
 
 		if (!this.options) return materialsInfo;
 
-		var converted = {};
+		let converted = {};
 
-		for (var mn in materialsInfo) {
+		for (let mn in materialsInfo) {
 
 			// Convert materials info into normalized form based on options
 
-			var mat = materialsInfo[mn];
+			let mat = materialsInfo[mn];
 
-			var covmat = {};
+			let covmat = {};
 
 			converted[mn] = covmat;
 
-			for (var prop in mat) {
+			for (let prop in mat) {
 
-				var save = true;
-				var value = mat[prop];
-				var lprop = prop.toLowerCase();
+				let save = true;
+				let value = mat[prop];
+				let lprop = prop.toLowerCase();
 
 				switch (lprop) {
 
@@ -275,7 +275,7 @@ class MaterialCreator {
 
 	preload() {
 
-		for (var mn in this.materialsInfo) {
+		for (let mn in this.materialsInfo) {
 
 			this.create(mn);
 
@@ -291,9 +291,9 @@ class MaterialCreator {
 
 	getAsArray() {
 
-		var index = 0;
+		let index = 0;
 
-		for (var mn in this.materialsInfo) {
+		for (let mn in this.materialsInfo) {
 
 			this.materialsArray[index] = this.create(mn);
 			this.nameLookup[mn] = index;
@@ -321,9 +321,9 @@ class MaterialCreator {
 
 		// Create material
 
-		var scope = this;
-		var mat = this.materialsInfo[materialName];
-		var params = {
+		let scope = this;
+		let mat = this.materialsInfo[materialName];
+		let params = {
 
 			name: materialName,
 			side: this.side
@@ -346,8 +346,8 @@ class MaterialCreator {
 
 			if (params[mapType]) return; // Keep the first encountered texture
 
-			var texParams = scope.getTextureParams(value, params);
-			var map = scope.loadTexture(resolveURL(scope.baseUrl, texParams.url));
+			let texParams = scope.getTextureParams(value, params);
+			let map = scope.loadTexture(resolveURL(scope.baseUrl, texParams.url));
 
 			map.repeat.copy(texParams.scale);
 			map.offset.copy(texParams.offset);
@@ -359,10 +359,10 @@ class MaterialCreator {
 
 		}
 
-		for (var prop in mat) {
+		for (let prop in mat) {
 
-			var value = mat[prop];
-			var n;
+			let value = mat[prop];
+			let n;
 
 			if (value === '') continue;
 
@@ -463,15 +463,15 @@ class MaterialCreator {
 
 	getTextureParams(value, matParams) {
 
-		var texParams = {
+		let texParams = {
 
 			scale: new THREE.Vector2(1, 1),
 			offset: new THREE.Vector2(0, 0)
 
 		};
 
-		var items = value.split(/\s+/);
-		var pos;
+		let items = value.split(/\s+/);
+		let pos;
 
 		pos = items.indexOf('-bm');
 
@@ -507,9 +507,9 @@ class MaterialCreator {
 
 	loadTexture(url, mapping, onLoad, onProgress, onError) {
 
-		var texture;
-		var loader = THREE.Loader.Handlers.get(url);
-		var manager = (this.manager !== undefined) ? this.manager : THREE.DefaultLoadingManager;
+		let texture;
+		let loader = THREE.Loader.Handlers.get(url);
+		let manager = (this.manager !== undefined) ? this.manager : THREE.DefaultLoadingManager;
 
 		if (loader === null) {
 

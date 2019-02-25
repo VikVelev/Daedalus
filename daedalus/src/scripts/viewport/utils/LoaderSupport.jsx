@@ -41,7 +41,7 @@
       */
      THREE.LoaderSupport.Callbacks = (function () {
  
-         var Validator = THREE.LoaderSupport.Validator;
+         let Validator = THREE.LoaderSupport.Validator;
  
          function Callbacks() {
              this.onProgress = null;
@@ -153,10 +153,10 @@
       */
      THREE.LoaderSupport.ResourceDescriptor = (function () {
  
-         var Validator = THREE.LoaderSupport.Validator;
+         let Validator = THREE.LoaderSupport.Validator;
  
          function ResourceDescriptor( url, extension ) {
-             var urlParts = url.split( '/' );
+             let urlParts = url.split( '/' );
  
              if ( urlParts.length < 2 ) {
  
@@ -197,7 +197,7 @@
       */
      THREE.LoaderSupport.PrepData = (function () {
  
-         var Validator = THREE.LoaderSupport.Validator;
+         let Validator = THREE.LoaderSupport.Validator;
  
          function PrepData( modelName ) {
              this.logging = {
@@ -248,13 +248,13 @@
           * @returns {@link THREE.LoaderSupport.PrepData}
           */
          PrepData.prototype.clone = function () {
-             var clone = new THREE.LoaderSupport.PrepData( this.modelName );
+             let clone = new THREE.LoaderSupport.PrepData( this.modelName );
              clone.logging.enabled = this.logging.enabled;
              clone.logging.debug = this.logging.debug;
              clone.resources = this.resources;
              clone.callbacks = this.callbacks;
  
-             var property, value;
+             let property, value;
              for ( property in this ) {
  
                  value = this[ property ];
@@ -278,10 +278,10 @@
           * @returns {{}} Object with each "ext" and the corresponding {@link THREE.LoaderSupport.ResourceDescriptor}
           */
          PrepData.prototype.checkResourceDescriptorFiles = function ( resources, fileDesc ) {
-             var resource, triple, i, found;
-             var result = {};
+             let resource, triple, i, found;
+             let result = {};
  
-             for ( var index in resources ) {
+             for ( let index in resources ) {
  
                  resource = resources[ index ];
                  found = false;
@@ -350,9 +350,9 @@
       */
      THREE.LoaderSupport.MeshBuilder = (function () {
  
-         var LOADER_MESH_BUILDER_VERSION = '1.2.1';
+         let LOADER_MESH_BUILDER_VERSION = '1.2.1';
  
-         var Validator = THREE.LoaderSupport.Validator;
+         let Validator = THREE.LoaderSupport.Validator;
  
          function MeshBuilder() {
              this.logging = {
@@ -382,20 +382,20 @@
           *
           */
          MeshBuilder.prototype.init = function () {
-             var defaultMaterial = new THREE.MeshStandardMaterial( { color: 0xDCF1FF } );
+             let defaultMaterial = new THREE.MeshStandardMaterial( { color: 0xDCF1FF } );
              defaultMaterial.name = 'defaultMaterial';
  
-             var defaultVertexColorMaterial = new THREE.MeshStandardMaterial( { color: 0xDCF1FF } );
+             let defaultVertexColorMaterial = new THREE.MeshStandardMaterial( { color: 0xDCF1FF } );
              defaultVertexColorMaterial.name = 'defaultVertexColorMaterial';
              defaultVertexColorMaterial.vertexColors = THREE.VertexColors;
  
-             var defaultLineMaterial = new THREE.LineBasicMaterial();
+             let defaultLineMaterial = new THREE.LineBasicMaterial();
              defaultLineMaterial.name = 'defaultLineMaterial';
  
-             var defaultPointMaterial = new THREE.PointsMaterial( { size: 1 } );
+             let defaultPointMaterial = new THREE.PointsMaterial( { size: 1 } );
              defaultPointMaterial.name = 'defaultPointMaterial';
  
-             var runtimeMaterials = {};
+             let runtimeMaterials = {};
              runtimeMaterials[ defaultMaterial.name ] = defaultMaterial;
              runtimeMaterials[ defaultVertexColorMaterial.name ] = defaultVertexColorMaterial;
              runtimeMaterials[ defaultLineMaterial.name ] = defaultLineMaterial;
@@ -420,7 +420,7 @@
           * @param {THREE.Material[]} materials Array of {@link THREE.Material}
           */
          MeshBuilder.prototype.setMaterials = function ( materials ) {
-             var payload = {
+             let payload = {
                  cmd: 'materialData',
                  materials: {
                      materialCloneInstructions: null,
@@ -466,16 +466,16 @@
           * @returns {THREE.Mesh[]} mesh Array of {@link THREE.Mesh}
           */
          MeshBuilder.prototype.buildMeshes = function ( meshPayload ) {
-             var meshName = meshPayload.params.meshName;
+             let meshName = meshPayload.params.meshName;
  
-             var bufferGeometry = new THREE.BufferGeometry();
+             let bufferGeometry = new THREE.BufferGeometry();
              bufferGeometry.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array( meshPayload.buffers.vertices ), 3 ) );
              if ( Validator.isValid( meshPayload.buffers.indices ) ) {
  
                  bufferGeometry.setIndex( new THREE.BufferAttribute( new Uint32Array( meshPayload.buffers.indices ), 1 ));
  
              }
-             var haveVertexColors = Validator.isValid( meshPayload.buffers.colors );
+             let haveVertexColors = Validator.isValid( meshPayload.buffers.colors );
              if ( haveVertexColors ) {
  
                  bufferGeometry.addAttribute( 'color', new THREE.BufferAttribute( new Float32Array( meshPayload.buffers.colors ), 3 ) );
@@ -496,10 +496,10 @@
  
              }
  
-             var material, materialName, key;
-             var materialNames = meshPayload.materials.materialNames;
-             var createMultiMaterial = meshPayload.materials.multiMaterial;
-             var multiMaterials = [];
+             let material, materialName, key;
+             let materialNames = meshPayload.materials.materialNames;
+             let createMultiMaterial = meshPayload.materials.multiMaterial;
+             let multiMaterials = [];
              for ( key in materialNames ) {
  
                  materialName = materialNames[ key ];
@@ -510,8 +510,8 @@
              if ( createMultiMaterial ) {
  
                  material = multiMaterials;
-                 var materialGroups = meshPayload.materials.materialGroups;
-                 var materialGroup;
+                 let materialGroups = meshPayload.materials.materialGroups;
+                 let materialGroup;
                  for ( key in materialGroups ) {
  
                      materialGroup = materialGroups[ key ];
@@ -521,12 +521,12 @@
  
              }
  
-             var meshes = [];
-             var mesh;
-             var callbackOnMeshAlter = this.callbacks.onMeshAlter;
-             var callbackOnMeshAlterResult;
-             var useOrgMesh = true;
-             var geometryType = Validator.verifyInput( meshPayload.geometryType, 0 );
+             let meshes = [];
+             let mesh;
+             let callbackOnMeshAlter = this.callbacks.onMeshAlter;
+             let callbackOnMeshAlterResult;
+             let useOrgMesh = true;
+             let geometryType = Validator.verifyInput( meshPayload.geometryType, 0 );
              if ( Validator.isValid( callbackOnMeshAlter ) ) {
  
                  callbackOnMeshAlterResult = callbackOnMeshAlter(
@@ -547,7 +547,7 @@
  
                      } else if ( callbackOnMeshAlterResult.providesAlteredMeshes() ) {
  
-                         for ( var i in callbackOnMeshAlterResult.meshes ) {
+                         for ( let i in callbackOnMeshAlterResult.meshes ) {
  
                              meshes.push( callbackOnMeshAlterResult.meshes[ i ] );
  
@@ -580,11 +580,11 @@
  
              }
  
-             var progressMessage;
+             let progressMessage;
              if ( Validator.isValid( meshes ) && meshes.length > 0 ) {
  
-                 var meshNames = [];
-                 for ( var i in meshes ) {
+                 let meshNames = [];
+                 for ( let i in meshes ) {
  
                      mesh = meshes[ i ];
                      meshNames[ i ] = mesh.name;
@@ -599,10 +599,10 @@
                  progressMessage += ' (' + ( meshPayload.progress.numericalValue * 100 ).toFixed( 2 ) + '%)';
  
              }
-             var callbackOnProgress = this.callbacks.onProgress;
+             let callbackOnProgress = this.callbacks.onProgress;
              if ( Validator.isValid( callbackOnProgress ) ) {
  
-                 var event = new CustomEvent( 'MeshBuilderEvent', {
+                 let event = new CustomEvent( 'MeshBuilderEvent', {
                      detail: {
                          type: 'progress',
                          modelName: meshPayload.params.meshName,
@@ -624,12 +624,12 @@
           * @param {Object} materialPayload Material update instructions
           */
          MeshBuilder.prototype.updateMaterials = function ( materialPayload ) {
-             var material, materialName;
-             var materialCloneInstructions = materialPayload.materials.materialCloneInstructions;
+             let material, materialName;
+             let materialCloneInstructions = materialPayload.materials.materialCloneInstructions;
              if ( Validator.isValid( materialCloneInstructions ) ) {
  
-                 var materialNameOrg = materialCloneInstructions.materialNameOrg;
-                 var materialOrg = this.materials[ materialNameOrg ];
+                 let materialNameOrg = materialCloneInstructions.materialNameOrg;
+                 let materialOrg = this.materials[ materialNameOrg ];
  
                  if ( Validator.isValid( materialNameOrg ) ) {
  
@@ -638,8 +638,8 @@
                      materialName = materialCloneInstructions.materialName;
                      material.name = materialName;
  
-                     var materialProperties = materialCloneInstructions.materialProperties;
-                     for ( var key in materialProperties ) {
+                     let materialProperties = materialCloneInstructions.materialProperties;
+                     for ( let key in materialProperties ) {
  
                          if ( material.hasOwnProperty( key ) && materialProperties.hasOwnProperty( key ) ) material[ key ] = materialProperties[ key ];
  
@@ -653,11 +653,11 @@
                  }
              }
  
-             var materials = materialPayload.materials.serializedMaterials;
+             let materials = materialPayload.materials.serializedMaterials;
              if ( Validator.isValid( materials ) && Object.keys( materials ).length > 0 ) {
  
-                 var loader = new THREE.MaterialLoader();
-                 var materialJson;
+                 let loader = new THREE.MaterialLoader();
+                 let materialJson;
                  for ( materialName in materials ) {
  
                      materialJson = materials[ materialName ];
@@ -690,9 +690,9 @@
           * @returns {Object} Map of Materials in JSON representation
           */
          MeshBuilder.prototype.getMaterialsJSON = function () {
-             var materialsJSON = {};
-             var material;
-             for ( var materialName in this.materials ) {
+             let materialsJSON = {};
+             let material;
+             for ( let materialName in this.materials ) {
  
                  material = this.materials[ materialName ];
                  materialsJSON[ materialName ] = material.toJSON();
@@ -721,8 +721,8 @@
      THREE.LoaderSupport.WorkerRunnerRefImpl = (function () {
  
          function WorkerRunnerRefImpl() {
-             var scope = this;
-             var scopedRunner = function( event ) {
+             let scope = this;
+             let scopedRunner = function( event ) {
                  scope.processMessage( event.data );
              };
              self.addEventListener( 'message', scopedRunner, false );
@@ -736,7 +736,7 @@
           * @param {Object} params The parameter object
           */
          WorkerRunnerRefImpl.prototype.applyProperties = function ( parser, params ) {
-             var property, funcName, values;
+             let property, funcName, values;
              for ( property in params ) {
                  funcName = 'set' + property.substring( 0, 1 ).toLocaleUpperCase() + property.substring( 1 );
                  values = params[ property ];
@@ -762,7 +762,7 @@
          WorkerRunnerRefImpl.prototype.processMessage = function ( payload ) {
              if ( payload.cmd === 'run' ) {
  
-                 var callbacks = {
+                 let callbacks = {
                      callbackMeshBuilder: function ( payload ) {
                          self.postMessage( payload );
                      },
@@ -772,7 +772,7 @@
                  };
  
                  // Parser is expected to be named as such
-                 var parser = new Parser();
+                 let parser = new Parser();
                  if ( typeof parser[ 'setLogging' ] === 'function' ) parser.setLogging( payload.logging.enabled, payload.logging.debug );
                  this.applyProperties( parser, payload.params );
                  this.applyProperties( parser, payload.materials );
@@ -802,11 +802,11 @@
       */
      THREE.LoaderSupport.WorkerSupport = (function () {
  
-         var WORKER_SUPPORT_VERSION = '2.2.0';
+         let WORKER_SUPPORT_VERSION = '2.2.0';
  
-         var Validator = THREE.LoaderSupport.Validator;
+         let Validator = THREE.LoaderSupport.Validator;
  
-         var LoaderWorker = (function () {
+         let LoaderWorker = (function () {
  
              function LoaderWorker() {
                  this._reset();
@@ -840,7 +840,7 @@
  
              LoaderWorker.prototype.initWorker = function ( code, runnerImplName ) {
                  this.runnerImplName = runnerImplName;
-                 var blob = new Blob( [ code ], { type: 'application/javascript' } );
+                 let blob = new Blob( [ code ], { type: 'application/javascript' } );
                  this.worker = new Worker( window.URL.createObjectURL( blob ) );
                  this.worker.onmessage = this._receiveWorkerMessage;
  
@@ -855,7 +855,7 @@
               * Executed in worker scope
               */
              LoaderWorker.prototype._receiveWorkerMessage = function ( e ) {
-                 var payload = e.data;
+                 let payload = e.data;
                  switch ( payload.cmd ) {
                      case 'meshData':
                      case 'materialData':
@@ -936,7 +936,7 @@
  
                      if ( this.queuedMessage.data.input instanceof ArrayBuffer ) {
  
-                         var content;
+                         let content;
                          if ( this.forceCopy ) {
  
                              content = this.queuedMessage.data.input.slice( 0 );
@@ -1039,16 +1039,16 @@
  
              }
  
-             var userWorkerCode = functionCodeBuilder( buildObject, buildSingleton );
-             userWorkerCode += 'var Parser = '+ parserName +  ';\n\n';
+             let userWorkerCode = functionCodeBuilder( buildObject, buildSingleton );
+             userWorkerCode += 'let Parser = '+ parserName +  ';\n\n';
              userWorkerCode += buildSingleton( runnerImpl.name, runnerImpl );
              userWorkerCode += 'new ' + runnerImpl.name + '();\n\n';
  
-             var scope = this;
+             let scope = this;
              if ( Validator.isValid( libLocations ) && libLocations.length > 0 ) {
  
-                 var libsContent = '';
-                 var loadAllLibraries = function ( path, locations ) {
+                 let libsContent = '';
+                 let loadAllLibraries = function ( path, locations ) {
                      if ( locations.length === 0 ) {
  
                          scope.loaderWorker.initWorker( libsContent + userWorkerCode, runnerImpl.name );
@@ -1056,12 +1056,12 @@
  
                      } else {
  
-                         var loadedLib = function ( contentAsString ) {
+                         let loadedLib = function ( contentAsString ) {
                              libsContent += contentAsString;
                              loadAllLibraries( path, locations );
                          };
  
-                         var fileLoader = new THREE.FileLoader();
+                         let fileLoader = new THREE.FileLoader();
                          fileLoader.setPath( path );
                          fileLoader.setResponseType( 'text' );
                          fileLoader.load( locations[ 0 ], loadedLib );
@@ -1110,10 +1110,10 @@
              this.loaderWorker.setTerminateRequested( terminateRequested );
          };
  
-         var buildObject = function ( fullName, object ) {
-             var objectString = fullName + ' = {\n';
-             var part;
-             for ( var name in object ) {
+         let buildObject = function ( fullName, object ) {
+             let objectString = fullName + ' = {\n';
+             let part;
+             for ( let name in object ) {
  
                  part = object[ name ];
                  if ( typeof( part ) === 'string' || part instanceof String ) {
@@ -1142,13 +1142,13 @@
              return objectString;
          };
  
-         var buildSingleton = function ( fullName, object, internalName, basePrototypeName, ignoreFunctions ) {
-             var objectString = '';
-             var objectName = ( Validator.isValid( internalName ) ) ? internalName : object.name;
+         let buildSingleton = function ( fullName, object, internalName, basePrototypeName, ignoreFunctions ) {
+             let objectString = '';
+             let objectName = ( Validator.isValid( internalName ) ) ? internalName : object.name;
  
-             var funcString, objectPart, constructorString;
+             let funcString, objectPart, constructorString;
              ignoreFunctions = Validator.verifyInput( ignoreFunctions, [] );
-             for ( var name in object.prototype ) {
+             for ( let name in object.prototype ) {
  
                  objectPart = object.prototype[ name ];
                  if ( name === 'constructor' ) {
@@ -1172,7 +1172,7 @@
              objectString += '\treturn ' + objectName + ';\n';
              objectString += '})();\n\n';
  
-             var inheritanceBlock = '';
+             let inheritanceBlock = '';
              if ( Validator.isValid( basePrototypeName ) ) {
  
                  inheritanceBlock += '\n';
@@ -1213,12 +1213,12 @@
       */
      THREE.LoaderSupport.WorkerDirector = (function () {
  
-         var LOADER_WORKER_DIRECTOR_VERSION = '2.2.1';
+         let LOADER_WORKER_DIRECTOR_VERSION = '2.2.1';
  
-         var Validator = THREE.LoaderSupport.Validator;
+         let Validator = THREE.LoaderSupport.Validator;
  
-         var MAX_WEB_WORKER = 16;
-         var MAX_QUEUE_SIZE = 8192;
+         let MAX_WEB_WORKER = 16;
+         let MAX_QUEUE_SIZE = 8192;
  
          function WorkerDirector( classDef ) {
              this.logging = {
@@ -1314,9 +1314,9 @@
              this.instructionQueue = [];
              this.instructionQueuePointer = 0;
  
-             for ( var instanceNo = 0; instanceNo < this.maxWebWorkers; instanceNo++ ) {
+             for ( let instanceNo = 0; instanceNo < this.maxWebWorkers; instanceNo++ ) {
  
-                 var workerSupport = new THREE.LoaderSupport.WorkerSupport();
+                 let workerSupport = new THREE.LoaderSupport.WorkerSupport();
                  workerSupport.setLogging( this.logging.enabled, this.logging.debug );
                  workerSupport.setForceWorkerDataCopy( this.workerDescription.forceWorkerDataCopy );
                  this.workerDescription.workerSupports[ instanceNo ] = {
@@ -1349,7 +1349,7 @@
           * @returns {boolean}
           */
          WorkerDirector.prototype.isRunning = function () {
-             var wsKeys = Object.keys( this.workerDescription.workerSupports );
+             let wsKeys = Object.keys( this.workerDescription.workerSupports );
              return ( ( this.instructionQueue.length > 0 && this.instructionQueuePointer < this.instructionQueue.length ) || wsKeys.length > 0 );
          };
  
@@ -1358,8 +1358,8 @@
           * @memberOf THREE.LoaderSupport.WorkerDirector
           */
          WorkerDirector.prototype.processQueue = function () {
-             var prepData, supportDesc;
-             for ( var instanceNo in this.workerDescription.workerSupports ) {
+             let prepData, supportDesc;
+             for ( let instanceNo in this.workerDescription.workerSupports ) {
  
                  supportDesc = this.workerDescription.workerSupports[ instanceNo ];
                  if ( ! supportDesc.inUse ) {
@@ -1393,10 +1393,10 @@
              supportDesc.workerSupport.setTerminateRequested( supportDesc.terminateRequested );
  
  
-             var scope = this;
-             var prepDataCallbacks = prepData.getCallbacks();
-             var globalCallbacks = this.workerDescription.globalCallbacks;
-             var wrapperOnLoad = function ( event ) {
+             let scope = this;
+             let prepDataCallbacks = prepData.getCallbacks();
+             let globalCallbacks = this.workerDescription.globalCallbacks;
+             let wrapperOnLoad = function ( event ) {
                  if ( Validator.isValid( globalCallbacks.onLoad ) ) globalCallbacks.onLoad( event );
                  if ( Validator.isValid( prepDataCallbacks.onLoad ) ) prepDataCallbacks.onLoad( event );
                  scope.objectsCompleted++;
@@ -1405,18 +1405,18 @@
                  scope.processQueue();
              };
  
-             var wrapperOnProgress = function ( event ) {
+             let wrapperOnProgress = function ( event ) {
                  if ( Validator.isValid( globalCallbacks.onProgress ) ) globalCallbacks.onProgress( event );
                  if ( Validator.isValid( prepDataCallbacks.onProgress ) ) prepDataCallbacks.onProgress( event );
              };
  
-             var wrapperOnMeshAlter = function ( event, override ) {
+             let wrapperOnMeshAlter = function ( event, override ) {
                  if ( Validator.isValid( globalCallbacks.onMeshAlter ) ) override = globalCallbacks.onMeshAlter( event, override );
                  if ( Validator.isValid( prepDataCallbacks.onMeshAlter ) ) override = globalCallbacks.onMeshAlter( event, override );
                  return override;
              };
  
-             var wrapperOnLoadMaterials = function ( materials ) {
+             let wrapperOnLoadMaterials = function ( materials ) {
                  if ( Validator.isValid( globalCallbacks.onLoadMaterials ) ) materials = globalCallbacks.onLoadMaterials( materials );
                  if ( Validator.isValid( prepDataCallbacks.onLoadMaterials ) ) materials = prepDataCallbacks.onLoadMaterials( materials );
                  return materials;
@@ -1424,7 +1424,7 @@
  
              supportDesc.loader = this._buildLoader( supportDesc.instanceNo );
  
-             var updatedCallbacks = new THREE.LoaderSupport.Callbacks();
+             let updatedCallbacks = new THREE.LoaderSupport.Callbacks();
              updatedCallbacks.setCallbackOnLoad( wrapperOnLoad );
              updatedCallbacks.setCallbackOnProgress( wrapperOnProgress );
              updatedCallbacks.setCallbackOnMeshAlter( wrapperOnMeshAlter );
@@ -1435,8 +1435,8 @@
          };
  
          WorkerDirector.prototype._buildLoader = function ( instanceNo ) {
-             var classDef = this.workerDescription.classDef;
-             var loader = Object.create( classDef.prototype );
+             let classDef = this.workerDescription.classDef;
+             let loader = Object.create( classDef.prototype );
              classDef.call( loader, THREE.DefaultLoadingManager );
  
              // verify that all required functions are implemented
@@ -1464,7 +1464,7 @@
  
                  supportDesc.workerSupport.setTerminateRequested( true );
  
-                 var loaderCallbacks = supportDesc.loader.callbacks;
+                 let loaderCallbacks = supportDesc.loader.callbacks;
                  if ( Validator.isValid( loaderCallbacks.onProgress ) ) loaderCallbacks.onProgress( { detail: { text: '' } } );
                  delete this.workerDescription.workerSupports[ supportDesc.instanceNo ];
  
@@ -1482,7 +1482,7 @@
              this.instructionQueuePointer = this.instructionQueue.length;
              this.callbackOnFinishedProcessing = Validator.verifyInput( callbackOnFinishedProcessing, null );
  
-             for ( var name in this.workerDescription.workerSupports ) {
+             for ( let name in this.workerDescription.workerSupports ) {
  
                  this.workerDescription.workerSupports[ name ].terminateRequested = true;
  

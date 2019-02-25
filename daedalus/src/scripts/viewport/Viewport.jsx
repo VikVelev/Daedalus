@@ -27,7 +27,7 @@ class Viewport extends Component {
 		this.addSkybox();
 
 		//Configure Camera
-		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 2000 );
 		this.camera.position.z = 70
 		this.camera.position.x = 30
 		this.camera.position.y = 50
@@ -35,8 +35,9 @@ class Viewport extends Component {
 		this.controls = new OrbitControls( this.camera, this.mount );
 		this.controls.dampingFactor = 0.3; // friction
 		this.controls.rotateSpeed = 0.3; // mouse sensitivity
+		this.controls.maxDistance = 300;
 
-		//Incorporate TransformControls in the future
+		//TODO: Incorporate TransformControls in the future
 
 		//Configure Renderer
 		this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -46,7 +47,7 @@ class Viewport extends Component {
 		//Initilize base event listeners and start animation loop
 		window.addEventListener( 'resize', this.onWindowResize, false );
 
-		this.load3DModel();
+		this.load3DModel("models/test.ply");
 		this.onWindowResize();
 		this.start();
 	}
@@ -57,6 +58,7 @@ class Viewport extends Component {
 		let imageSuffix = ".png";
 		  
 		let materialArray = [];
+
 		for (let i = 0; i < 6; i++) {
 			materialArray.push( new THREE.MeshBasicMaterial({
 				map: THREE.ImageUtils.loadTexture( imagePrefix + directions[i] + imageSuffix ),
@@ -64,9 +66,8 @@ class Viewport extends Component {
 			}));
 		}
 		 
-		let skyGeometry = new THREE.CubeGeometry( 500, 500, 500 );
-		let skyMaterial = new THREE.MeshFaceMaterial( materialArray );
-		let skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+		let skyGeometry = new THREE.CubeGeometry( 2000, 2000, 2000 );
+		let skyBox = new THREE.Mesh( skyGeometry, materialArray );
 
 		this.scene.add( skyBox );
 	}
@@ -79,7 +80,7 @@ class Viewport extends Component {
 
 		directionalLight.castShadow = true;
 
-		let d = 1;
+		let d = 50;
 		directionalLight.shadow.camera.left = - d;
 		directionalLight.shadow.camera.right = d;
 		directionalLight.shadow.camera.top = d;
@@ -95,9 +96,8 @@ class Viewport extends Component {
 
 	}
 
-	load3DModel(model) {
-		//The cube is a test model
-		let pc = new PointCloud("models/cube.obj", this.scene);
+	load3DModel(path) {
+		let pc = new PointCloud(path, this.scene);
 		pc.load();
 	}
 

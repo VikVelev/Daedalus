@@ -31,8 +31,6 @@ export default class PointCloud {
     
     // Since at this moment the AI is currently able to generate just point clouds
     // we need to visualize them correctly with ThreeJS
-    
-    //TODO IMplement OBJ just vertices parser on top of a real obj parser
 
     vertices = []; // plain [[x,y,z],...] array
     geometry = {}; //three js object (probably buffered geometry)
@@ -42,36 +40,50 @@ export default class PointCloud {
     type = "" //obj or ply
 
     constructor(filename, scene){
+
         this.filename = filename;
         this.scene = scene;
 
         this.type = this.filename.slice(-3);
 
         if(this.type === "obj") {
+
             this.loader = new THREE.OBJLoader2();
-            this.loader.vertexOnlyMode = true;
-            this.loader.logging.debug = true;
+            this.loader.logging.enabled = false;
 
         } else if(this.type === "ply") {
+
             this.loader = new PLYLoader();
+
         }
     }
+
+    callbackOnProgress = (data) => {
+        console.log(data);
+    }
+
+    callbackOnError = (data) => {
+        console.log(data);
+    }
+
 
     callbackOnLoad = (data) => {
         if (this.type === "obj") {
 
             let object = data.detail.loaderRootNode;
-            this.scene.add(object);
-            this.scene_objects.push(object);
-            console.log(object);
 
+            //If there is no geometry
             if(object.children.length < 1) {
+
                 let pc = this.convertToSphereCloud(this.loader.vertexArray);
                 this.scene.add(pc);
                 this.scene_objects.push(pc);
+
+            } else {
+                this.scene.add(object);
+                this.scene_objects.push(object);
             }
             
-
         } else if (this.type === "ply") {
 
             this.geometry = data;
@@ -84,10 +96,18 @@ export default class PointCloud {
 
     load = () => {
         if(this.type === "ply") {
+
             this.loader.load(this.filename, this.callbackOnLoad);
+
         } else if (this.type === "obj") {
-            //TODO figure out how to load the fucking OBJ
-            this.loader.load(this.filename, this.callbackOnLoad, null, null, null, false)
+
+            this.loader.load(this.filename, 
+                             this.callbackOnLoad, 
+                             this.callbackOnProgress, 
+                             this.callbackOnError, 
+                             null, 
+                             false)
+            console.log(this.loader);
         }
     }
 
@@ -127,7 +147,7 @@ export default class PointCloud {
         })
 
         this.model = this.sphere_geometry;
-        this.sphere_geometry.rotation.x = -1.5;
+        this.sphere_geometry.rotation.x = - Math.PI / 2;
 
         return this.sphere_geometry;
     }
