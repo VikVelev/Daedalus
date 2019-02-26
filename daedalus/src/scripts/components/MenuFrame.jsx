@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { observer } from 'mobx-react'
-import { Segment, Header, Transition, Button } from 'semantic-ui-react';
 import Options from './Options';
 import TopHeader from './TopHeader';
 
