@@ -21,5 +21,5 @@ tryConnection();
 
 client.on('error', (error) => {
     console.log("Trying to connect to React dev environment on port: " + (process.env.PORT - 100));
-    setTimeout(tryConnection, 1000);
+    setTimeout(tryConnection, 2000);
 });

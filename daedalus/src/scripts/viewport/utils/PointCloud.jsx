@@ -10,9 +10,9 @@ import {
 } from 'three';
 
 let THREE = require('three');
-
 let OBJLoader2 = require('./OBJLoader')
 OBJLoader2(THREE, MTLLoader)
+
 //This should come in use when I get to reading IO, Importing and exporting files;
 // eslint-disable-next-line
 let electron, rie;
@@ -59,10 +59,12 @@ export default class PointCloud {
     }
 
     callbackOnProgress = (data) => {
+        //TODO: Loading animation/screen
         console.log(data);
     }
 
     callbackOnError = (data) => {
+        //TODO: Error handling
         console.log(data);
     }
 
