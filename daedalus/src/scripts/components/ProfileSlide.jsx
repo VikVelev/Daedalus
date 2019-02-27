@@ -5,14 +5,6 @@ import { Segment, Transition, Button } from 'semantic-ui-react';
 @observer
 class ProfileSlide extends Component {
 
-    state = {
-        open: false
-    }
-
-    toggleOff = () => {
-        // TODO: MOBX change state of the other component from here        
-    }
-
     render() {
         return (
             <Transition visible={this.props.profileOpen} animation='fly right' duration={500}>  

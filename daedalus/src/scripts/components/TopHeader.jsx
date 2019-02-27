@@ -10,23 +10,23 @@ class TopHeader extends Component {
 
     //open sliding menu (sm) profile
 
-    store = {
-        ...this.props.store,
-        topHeader: {
-            profileOpen: false,
-            settingsOpen: false,
-        }
-    }
-
     toggleSMProfile = () => {
-        this.setState({ profileOpen : !this.state.profileOpen })
+        this.props.store.profile.open = !this.props.store.profile.open;
         //TOGGLE TRANSITION of the slides
     }
 
     toggleSMSettings = () => {
         console.log("Opening settings");
-        this.setState({ settingsOpen : !this.state.settingsOpen })
+        this.props.store.settings.open = !this.props.store.settings.open;
         //TOGGLE TRANSITION of the slides
+    }
+
+    toggleModes = () => {
+        if (this.props.store.menuFrame.type === "GENERATION") {
+            this.props.store.menuFrame.type = "PREVIEW"
+        } else if (this.props.store.menuFrame.type === "PREVIEW") {
+            this.props.store.menuFrame.type = "GENERATION"
+        }
     }
 
     render() {
@@ -34,23 +34,23 @@ class TopHeader extends Component {
             <Transition visible={this.props.visible} animation='fly down' duration={500}>
                 <div>
                     <Icon 
-                        className={"menuframe top profile icon " + (!this.state.profileOpen ? "" : "hidden_button")}
+                        className={"menuframe top profile icon " + (!this.props.store.profile.open ? "" : "hidden_button")}
                         name="user circle" size="huge" 
                         onClick={this.toggleSMProfile}
                     />
-                    <ProfileSlide profileOpen={this.state.profileOpen} toggle={this.toggleSMProfile}/>
+                    <ProfileSlide store={this.props.store} profileOpen={this.props.store.profile.open} toggle={this.toggleSMProfile}/>
 
-                    <Segment color="violet" className={"menuframe top " + this.props.type.toLowerCase()} >
+                    <Segment color="violet" className={"menuframe top " + this.props.type.toLowerCase()} onClick={this.toggleModes}>
                         <Header>
                             {this.props.type}
                         </Header>
                     </Segment>
 
-                    <Icon className={"menuframe top settings icon " + (!this.state.settingsOpen ? "" : "hidden_button")}
+                    <Icon className={"menuframe top settings icon " + (!this.props.store.settings.open ? "" : "hidden_button")}
                         name="setting" size="huge" 
                         onClick={this.toggleSMSettings}
                     />
-                    <SettingsSlide profileOpen={this.state.settingsOpen} toggle={this.toggleSMSettings}/>
+                    <SettingsSlide store={this.props.store} profileOpen={this.props.store.settings.open} toggle={this.toggleSMSettings}/>
                 </div>
             </Transition>
         )

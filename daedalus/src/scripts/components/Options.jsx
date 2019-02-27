@@ -4,15 +4,6 @@ import { Transition, Button, Input } from 'semantic-ui-react';
 
 @observer
 class Options extends Component {
-    
-    store = this.props.store;
-
-    state = {
-        active: {},
-        togglePreviewOptions: true,
-        toggleGenerationOptions: true,
-        type: "",
-    }
 
     openConsole = () => {
         console.log("opened something");
@@ -27,9 +18,9 @@ class Options extends Component {
     toggleThis = () => {
 
         if(this.props.type === "PREVIEW") {
-            this.setState({ togglePreviewOptions: !this.state.togglePreviewOptions });
+            this.setState({ togglePreviewOptions: !this.props.store.options.togglePreviewOptions });
         } else if (this.props.type === "GENERATION") {
-            this.setState({ toggleGenerationOptions: !this.state.toggleGenerationOptions });
+            this.setState({ toggleGenerationOptions: !this.props.store.options.toggleGenerationOptions });
         }
 
     }   
@@ -52,8 +43,9 @@ class Options extends Component {
     }
 
     generate = () => {
-        console.log(this.store);
-        console.log("Generating");
+        console.log(this.props.store);
+        //this.props.store.loading = true;
+        console.log(this.props.store);
     }
 
     render() {
@@ -61,7 +53,7 @@ class Options extends Component {
         if (this.props.type === "PREVIEW") {
 
             return (
-                <Transition visible={this.state.togglePreviewOptions} animation='fly up' 
+                <Transition visible={this.props.store.options.togglePreviewOptions} animation='fly up' 
                             duration={1000} transitionOnMount={true}>
                     
                     <div className="menuframe preview_options" style={{ display: "flex !important" }}>
@@ -77,10 +69,9 @@ class Options extends Component {
                 </Transition>
             );
         } else if (this.props.type === "GENERATION") {
-            console.log("what")
 
             return (
-                <Transition visible={this.state.toggleGenerationOptions} animation='fly up' 
+                <Transition visible={this.props.store.options.toggleGenerationOptions} animation='fly up' 
                     duration={1000} transitionOnMount={true}>
 
                     <div className="generation_options menuframe" style={{ display: "flex !important" }}>

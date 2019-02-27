@@ -13,11 +13,6 @@ import OrbitControls from 'threejs-orbit-controls';
 @observer
 class Viewport extends Component {
 
-	state = {
-		generating: false,
-		preview: true,
-	}
-
 	componentDidMount() {
 
 		this.width = this.mount.clientWidth

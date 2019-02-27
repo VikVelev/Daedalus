@@ -8,23 +8,16 @@ import "../../styles/MenuFrame.css"
 @observer
 class MenuFrame extends Component {
 
-    store = {
-        ...this.props.store,
-        menuFrame: {
-            toggleTopHeader: true,
-            type: "GENERATION"
-            //type: "PREVIEW", //Could be generating
-        }
-    };
-
-    toggleTopHeader = () => this.setState({ toggleTopHeader: !this.state.toggleTopHeader })
+    toggleTopHeader = () => {
+        this.props.store.menuFrame.toggleTopHeader = !this.props.store.menuFrame.toggleTopHeader;
+    }
 
     render() {
         return (
             <div className={this.props.className}>
-                <TopHeader store={this.store} {...this.store.menuFrame}/>
+                <TopHeader store={this.props.store} {...this.props.store.menuFrame}/>
                 {this.props.children} {/* .children === Viewport */}
-                <Options store={this.store} type={this.store.menuFrame.type}/>
+                <Options store={this.props.store} type={this.props.store.menuFrame.type}/>
             </div>
         )
     }
