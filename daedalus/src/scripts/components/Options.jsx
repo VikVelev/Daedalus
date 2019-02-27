@@ -1,13 +1,17 @@
 import React, { Component } from 'react'
 import { observer } from 'mobx-react'
-import { Transition, Button } from 'semantic-ui-react';
+import { Transition, Button, Input } from 'semantic-ui-react';
 
 @observer
 class Options extends Component {
     
+    store = this.props.store;
+
     state = {
         active: {},
-        toggleOptions: false,
+        togglePreviewOptions: true,
+        toggleGenerationOptions: true,
+        type: "",
     }
 
     openConsole = () => {
@@ -20,11 +24,15 @@ class Options extends Component {
         { icon: "assistive listening systems", text: "test", onClick: this.openConsole},
     ]
 
-    toggleThis = () => this.setState({ toggleOptions: !this.state.toggleOptions })    
-    
-    componentDidMount() {
-        this.toggleThis();
-    }
+    toggleThis = () => {
+
+        if(this.props.type === "PREVIEW") {
+            this.setState({ togglePreviewOptions: !this.state.togglePreviewOptions });
+        } else if (this.props.type === "GENERATION") {
+            this.setState({ toggleGenerationOptions: !this.state.toggleGenerationOptions });
+        }
+
+    }   
     
     button = (button, key) => {
         return (
@@ -43,23 +51,54 @@ class Options extends Component {
         );
     }
 
-
+    generate = () => {
+        console.log(this.store);
+        console.log("Generating");
+    }
 
     render() {
-        return (
-            <Transition visible={this.state.toggleOptions} animation='fly up' 
+
+        if (this.props.type === "PREVIEW") {
+
+            return (
+                <Transition visible={this.state.togglePreviewOptions} animation='fly up' 
                             duration={1000} transitionOnMount={true}>
-                <div className="menuframe optionsframe" style={{ display: "flex !important" }}>
-                    <div className="optionsContainer">
-                        {
-                            this.buttons.map((element, key) => {
-                                return this.button(element, key);
-                            })
-                        }
+                    
+                    <div className="menuframe preview_options" style={{ display: "flex !important" }}>
+                        <div className="optionsContainer">
+                            {
+                                this.buttons.map((element, key) => {
+                                    return this.button(element, key);
+                                })
+                            }
+                        </div>
                     </div>
-                </div>
-            </Transition>
-       )
+
+                </Transition>
+            );
+        } else if (this.props.type === "GENERATION") {
+            console.log("what")
+
+            return (
+                <Transition visible={this.state.toggleGenerationOptions} animation='fly up' 
+                    duration={1000} transitionOnMount={true}>
+
+                    <div className="generation_options menuframe" style={{ display: "flex !important" }}>
+                        <div className="generation_options_container">
+                            <Input label={{ icon: 'asterisk' }} 
+                                labelPosition='right corner' 
+                                placeholder='Choose a model class' 
+                                className="generate_input"
+                            />
+                            <Button color="violet" size="huge" className="generate_button" onClick={this.generate}>
+                                Generate
+                            </Button>
+                        </div>
+                    </div>
+
+                </Transition>
+            );
+        }
     }
 }
 

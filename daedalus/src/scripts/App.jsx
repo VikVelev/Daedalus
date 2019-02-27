@@ -4,6 +4,7 @@ import { BrowserRouter as Router , Route, Switch } from 'react-router-dom';
 import NotFound from './pages/NotFound.jsx';
 import Main from './pages/Main.jsx';
 import { observer } from 'mobx-react';
+import { observable } from 'mobx';
 
 import 'semantic-ui-css/semantic.min.css';
 import '../styles/App.css';
@@ -11,8 +12,10 @@ import '../styles/App.css';
 @observer
 class App extends Component {
 
+	@observable store = {}
+
 	routes = {
-		Main: () => (<Main></Main>),
+		Main: () => (<Main store={this.store}></Main>),
 		NotFound: () => (<NotFound></NotFound>)
 	}
 

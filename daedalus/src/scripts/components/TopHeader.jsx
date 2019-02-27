@@ -10,9 +10,12 @@ class TopHeader extends Component {
 
     //open sliding menu (sm) profile
 
-    state = {
-        profileOpen: false,
-        settingsOpen: false,
+    store = {
+        ...this.props.store,
+        topHeader: {
+            profileOpen: false,
+            settingsOpen: false,
+        }
     }
 
     toggleSMProfile = () => {
@@ -37,8 +40,7 @@ class TopHeader extends Component {
                     />
                     <ProfileSlide profileOpen={this.state.profileOpen} toggle={this.toggleSMProfile}/>
 
-
-                    <Segment className={"menuframe top " + this.props.type.toLowerCase()} >
+                    <Segment color="violet" className={"menuframe top " + this.props.type.toLowerCase()} >
                         <Header>
                             {this.props.type}
                         </Header>
