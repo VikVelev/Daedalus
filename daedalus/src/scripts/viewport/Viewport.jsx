@@ -32,6 +32,7 @@ class Viewport extends Component {
 		this.camera.position.y = 50
 
 		this.controls = new OrbitControls( this.camera, this.mount );
+		this.controls.autoRotate = true;
 		this.controls.dampingFactor = 0.3; // friction
 		this.controls.rotateSpeed = 0.3; // mouse sensitivity
 		this.controls.maxDistance = 300;
@@ -52,6 +53,8 @@ class Viewport extends Component {
 		this.load3DModel("models/test (copy).ply", 3);
 		this.load3DModel("models/test1 (copy).ply", 4);
 		this.load3DModel("models/test2 (copy).ply", 5);
+		this.load3DModel("models/test3.ply", 6);
+
 		this.onWindowResize();
 		this.start();
 

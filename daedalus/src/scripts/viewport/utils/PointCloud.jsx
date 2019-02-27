@@ -37,6 +37,7 @@ export default class PointCloud {
     geometry = {}; //three js object (probably buffered geometry)
     scene_objects = [];
     sphere_geometry = new Group();
+    scale = 100;
     loader = {} // a loader selected dynamically depending on the file you wanna load
     type = "" //obj or ply
     loaders = {
@@ -68,7 +69,7 @@ export default class PointCloud {
 
     callbackOnLoad = (data) => {
 
-        let object;
+        let object = {};
 
         if (this.type === "obj") {
             
@@ -86,10 +87,12 @@ export default class PointCloud {
 
 
         let coords = calculateCoordinates(this.store.indexStack[this.filename]);
-        object.position.x = coords.x * 100;
-        object.position.z = coords.y * 100;
 
-    
+        object.position.x = coords.x * this.scale;
+        object.position.z = coords.y * this.scale;
+
+        object.rotation.z = Math.PI/2
+
         this.scene.add(object);
         this.scene_objects.push(object);
         //Calculate object coordinates based on index
@@ -137,19 +140,19 @@ export default class PointCloud {
         vertices.forEach(point => {
             
             //TODO: Customization of point visualization -> sphere/cube/prism w/e;
-            let geometry = new SphereGeometry(1.2, 8, 8);
+            let geometry = new SphereGeometry(this.scale/80, 2, 2);
             let material = new MeshLambertMaterial({ color: 0x0055ff });
 
             let sphere = new Mesh(geometry, material);
-            sphere.position.x = point[0] * 100;
-            sphere.position.y = point[1] * 100;
-            sphere.position.z = point[2] * 100;
+            sphere.position.x = point[0] * this.scale;
+            sphere.position.y = point[1] * this.scale;
+            sphere.position.z = point[2] * this.scale;
             
             this.sphere_geometry.add(sphere);
         })
 
         this.model = this.sphere_geometry;
-        this.sphere_geometry.rotation.x = - Math.PI / 2;
+        this.sphere_geometry.rotation.x = -Math.PI/2;
 
         return this.sphere_geometry;
     }
