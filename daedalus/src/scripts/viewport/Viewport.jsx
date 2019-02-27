@@ -46,9 +46,16 @@ class Viewport extends Component {
 		//Initilize base event listeners and start animation loop
 		window.addEventListener( 'resize', this.onWindowResize, false );
 
-		this.load3DModel("models/test.ply");
+		this.load3DModel("models/test.ply", 0);
+		this.load3DModel("models/test1.ply", 1);
+		this.load3DModel("models/test2.ply", 2);
+		this.load3DModel("models/test (copy).ply", 3);
+		this.load3DModel("models/test1 (copy).ply", 4);
+		this.load3DModel("models/test2 (copy).ply", 5);
 		this.onWindowResize();
 		this.start();
+
+		//this.loadedModels[1].geometry.position.x = 100;
 	}
 
 	addSkybox() {
@@ -64,7 +71,7 @@ class Viewport extends Component {
 				side: THREE.BackSide
 			}));
 		}
-		 
+		
 		let skyGeometry = new THREE.CubeGeometry( 2000, 2000, 2000 );
 		let skyBox = new THREE.Mesh( skyGeometry, materialArray );
 
@@ -95,8 +102,12 @@ class Viewport extends Component {
 
 	}
 
-	load3DModel(path) {
-		let pc = new PointCloud(path, this.scene);
+	load3DModel(path, index) {
+		let pc = new PointCloud(this.props.store, path, this.scene);
+
+		this.props.store.addModel(pc);
+		this.props.store.stackPush(path, index);
+
 		pc.load();
 	}
 

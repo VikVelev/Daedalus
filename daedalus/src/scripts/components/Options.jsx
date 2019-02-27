@@ -43,9 +43,7 @@ class Options extends Component {
     }
 
     generate = () => {
-        console.log(this.props.store);
-        //this.props.store.loading = true;
-        console.log(this.props.store);
+        
     }
 
     render() {
@@ -53,8 +51,8 @@ class Options extends Component {
         if (this.props.type === "PREVIEW") {
 
             return (
-                <Transition visible={this.props.store.options.togglePreviewOptions} animation='fly up' 
-                            duration={1000} transitionOnMount={true}>
+                <Transition visible={this.props.store.options.togglePreviewOptions} 
+                    animation='fly up' duration={500}>
                     
                     <div className="menuframe preview_options" style={{ display: "flex !important" }}>
                         <div className="optionsContainer">
@@ -71,8 +69,8 @@ class Options extends Component {
         } else if (this.props.type === "GENERATION") {
 
             return (
-                <Transition visible={this.props.store.options.toggleGenerationOptions} animation='fly up' 
-                    duration={1000} transitionOnMount={true}>
+                <Transition visible={this.props.store.options.toggleGenerationOptions} 
+                            animation='fly up' duration={500}>
 
                     <div className="generation_options menuframe" style={{ display: "flex !important" }}>
                         <div className="generation_options_container">

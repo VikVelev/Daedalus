@@ -1,6 +1,7 @@
 
 import PLYLoader from './PLYLoader.jsx';
 import MTLLoader from './MTLLoader.jsx';
+import { calculateCoordinates } from './DiscChooser'
 import { 
     MeshLambertMaterial,
     SphereGeometry, 
@@ -38,24 +39,20 @@ export default class PointCloud {
     sphere_geometry = new Group();
     loader = {} // a loader selected dynamically depending on the file you wanna load
     type = "" //obj or ply
+    loaders = {
+        "obj" : new THREE.OBJLoader2(),
+        "ply" : new PLYLoader(),
+    }
 
-    constructor(filename, scene){
+    constructor(store, filename, scene){
 
+        this.store = store;
         this.filename = filename;
         this.scene = scene;
 
         this.type = this.filename.slice(-3);
 
-        if(this.type === "obj") {
-
-            this.loader = new THREE.OBJLoader2();
-            this.loader.logging.enabled = false;
-
-        } else if(this.type === "ply") {
-
-            this.loader = new PLYLoader();
-
-        }
+        this.loader = this.loaders[this.type];
     }
 
     callbackOnProgress = (data) => {
@@ -70,46 +67,49 @@ export default class PointCloud {
 
 
     callbackOnLoad = (data) => {
+
+        let object;
+
         if (this.type === "obj") {
-
-            let object = data.detail.loaderRootNode;
-
+            
+            object = data.detail.loaderRootNode;
             //If there is no geometry
-            if(object.children.length < 1) {
-
-                let pc = this.convertToSphereCloud(this.loader.vertexArray);
-                this.scene.add(pc);
-                this.scene_objects.push(pc);
-
-            } else {
-                this.scene.add(object);
-                this.scene_objects.push(object);
+            if(object.children.length < 1 ){
+                object = this.convertToSphereCloud(this.loader.vertexArray);
             }
             
         } else if (this.type === "ply") {
 
             this.geometry = data;
-
-            let pc = this.convertToSphereCloud(this.vertices);
-            this.scene.add(pc);
-            this.scene_objects.push(pc);
+            object = this.convertToSphereCloud(this.vertices);
         }
+
+
+        let coords = calculateCoordinates(this.store.indexStack[this.filename]);
+        object.position.x = coords.x * 100;
+        object.position.z = coords.y * 100;
+
+    
+        this.scene.add(object);
+        this.scene_objects.push(object);
+        //Calculate object coordinates based on index
     }
 
     load = () => {
+
         if(this.type === "ply") {
 
             this.loader.load(this.filename, this.callbackOnLoad);
 
         } else if (this.type === "obj") {
 
-            this.loader.load(this.filename, 
-                             this.callbackOnLoad, 
-                             this.callbackOnProgress, 
-                             this.callbackOnError, 
-                             null, 
+            this.loader.load(this.filename,
+                             this.callbackOnLoad,
+                             this.callbackOnProgress,
+                             this.callbackOnError,
+                             null,
                              false)
-            console.log(this.loader);
+
         }
     }
 

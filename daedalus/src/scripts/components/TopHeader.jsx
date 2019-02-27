@@ -12,21 +12,14 @@ class TopHeader extends Component {
 
     toggleSMProfile = () => {
         this.props.store.profile.open = !this.props.store.profile.open;
-        //TOGGLE TRANSITION of the slides
     }
 
     toggleSMSettings = () => {
-        console.log("Opening settings");
         this.props.store.settings.open = !this.props.store.settings.open;
-        //TOGGLE TRANSITION of the slides
     }
 
     toggleModes = () => {
-        if (this.props.store.menuFrame.type === "GENERATION") {
-            this.props.store.menuFrame.type = "PREVIEW"
-        } else if (this.props.store.menuFrame.type === "PREVIEW") {
-            this.props.store.menuFrame.type = "GENERATION"
-        }
+        this.props.store.nextViewportState();
     }
 
     render() {
@@ -35,12 +28,15 @@ class TopHeader extends Component {
                 <div>
                     <Icon 
                         className={"menuframe top profile icon " + (!this.props.store.profile.open ? "" : "hidden_button")}
-                        name="user circle" size="huge" 
+                        name="user circle" size="huge"
                         onClick={this.toggleSMProfile}
                     />
-                    <ProfileSlide store={this.props.store} profileOpen={this.props.store.profile.open} toggle={this.toggleSMProfile}/>
+                    <ProfileSlide store={this.props.store} 
+                                  profileOpen={this.props.store.profile.open} 
+                                  toggle={this.toggleSMProfile}/>
 
-                    <Segment color="violet" className={"menuframe top " + this.props.type.toLowerCase()} onClick={this.toggleModes}>
+                    <Segment color="violet" onClick={this.toggleModes}
+                             className={"menuframe top " + this.props.type.toLowerCase()} >
                         <Header>
                             {this.props.type}
                         </Header>
@@ -50,7 +46,9 @@ class TopHeader extends Component {
                         name="setting" size="huge" 
                         onClick={this.toggleSMSettings}
                     />
-                    <SettingsSlide store={this.props.store} profileOpen={this.props.store.settings.open} toggle={this.toggleSMSettings}/>
+                    <SettingsSlide store={this.props.store}
+                                   profileOpen={this.props.store.settings.open} 
+                                   toggle={this.toggleSMSettings}/>
                 </div>
             </Transition>
         )

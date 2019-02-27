@@ -1,12 +1,21 @@
-import { autorun, observable } from "mobx";
+import { autorun, observable, action } from "mobx";
 
 class Store {
 
-    constructor(props) {
-        
+    @observable loadedModels = [];
+    @observable indexStack = {};
+
+    @action addModel(pc) {
+        console.log(pc);
+        this.loadedModels.push(pc);
     }
 
-    @observable loadedModels = [];
+    @action stackPush(key, index) {
+        this.indexStack = {
+            ...this.indexStack,
+            [key] : index,
+        }
+    }
 
     @observable loading = {
         is: false,
@@ -15,8 +24,12 @@ class Store {
 
     @observable menuFrame = {
         toggleTopHeader: true,
-        type: "GENERATION"
-        //type: "PREVIEW", //Could be generating
+        //type: "GENERATION"
+        type: "PREVIEW",
+        table: {
+            "GENERATION" : "PREVIEW",
+            "PREVIEW" : "GENERATION"
+        }
     }
 
     @observable options = {
@@ -39,6 +52,9 @@ class Store {
         preview: this.menuFrame.type === "PREVIEW",
     }
 
+    @action nextViewportState() {
+        this.menuFrame.type = this.menuFrame.table[this.menuFrame.type]
+    }
 }
 
 let store = new Store();
