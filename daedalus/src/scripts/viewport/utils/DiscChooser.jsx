@@ -5,6 +5,7 @@
     
 
 */
+
 export function calculateCoordinates(index) {
 
     let coords = { x: 0, y: 0 };
