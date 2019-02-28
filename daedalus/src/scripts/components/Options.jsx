@@ -5,14 +5,14 @@ import { Transition, Button, Input } from 'semantic-ui-react';
 @observer
 class Options extends Component {
 
-    openConsole = () => {
-        console.log("opened something");
+    loadModel = () => {
+        this.props.store.loadModel(null, "models/test2.ply", 2);
     }
 
     buttons = [
-        { icon: "arrow left", text: "Previous", onClick: this.props.store.previousModel.bind(this.props.store)},
-        { icon: "arrow right", text: "Next", onClick: this.props.store.nextModel.bind(this.props.store)},
-        { icon: "assistive listening systems", text: "test", onClick: this.openConsole},
+        { icon: "arrow left", text: "Previous", onClick: this.props.store.previousModel},
+        { icon: "arrow right", text: "Next", onClick: this.props.store.nextModel},
+        { icon: "assistive listening systems", text: "test", onClick: this.loadModel},
     ]
 
     toggleThis = () => {

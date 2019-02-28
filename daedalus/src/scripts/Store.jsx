@@ -1,4 +1,5 @@
 import { autorun, observable, action } from "mobx";
+import PointCloud from './viewport/utils/PointCloud.jsx'
 
 class Store {
 
@@ -7,13 +8,14 @@ class Store {
     @observable availableModels = []; //All models that can be loaded
     @observable indexStack = {};    //Stack with indices directly coresponding to the arrays above, indicating and controlling loadability of models
     @observable currentlyChosenModel = 0; //index
+    @observable sceneRef = {};
     @observable state = "PREVIEW"
     @observable stateTable = {
         "GENERATION" : "PREVIEW",
         "PREVIEW" : "GENERATION"
     }
 
-    @action previousModel() {
+    @action previousModel = () => {
 
         if (this.loadedModels[this.currentlyChosenModel + 1] !== undefined){
             this.currentlyChosenModel++;
@@ -26,7 +28,7 @@ class Store {
         }
     }
 
-    @action nextModel() {
+    @action nextModel = () => {
 
         if (this.loadedModels[this.currentlyChosenModel - 1] !== undefined){
             this.currentlyChosenModel--;
@@ -54,6 +56,19 @@ class Store {
             ...this.indexStack,
             [key] : index,
         }
+    }
+
+    @action loadModel = (scene, path, index) => {
+        if(scene !== null) {
+            this.sceneRef = scene;
+        }
+        
+        let pc = new PointCloud(this, path, this.sceneRef);
+
+		this.addModel(pc);
+		this.stackPush(path, index);
+		
+		pc.load();
     }
 
     @observable loading = {

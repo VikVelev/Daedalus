@@ -5,6 +5,7 @@ import { calculateCoordinates } from './DiscChooser'
 import { 
     MeshLambertMaterial,
     SphereGeometry, 
+    IcosahedronBufferGeometry,
     //CubeGeometry, 
     Group, 
     Mesh, 
@@ -101,12 +102,12 @@ export default class PointCloud {
     load = () => {
         //TODO: REFACTOR THIS
 
-        if (Object.keys(this.store.indexStack).length > 2 && this.store.state === "PREVIEW") {
+        if (Object.keys(this.store.indexStack).length > 3 && this.store.state === "PREVIEW") {
             console.warn("YOU ARE IN PREVIEW MODE, no more than one model allowed");
         }
 
         if (this.store.state === "GENERATION" ||
-           (Object.keys(this.store.indexStack).length <= 2 && 
+           (Object.keys(this.store.indexStack).length <= 3 && 
             this.store.state === "PREVIEW")) {
 
             if(this.type === "ply") {
@@ -154,22 +155,32 @@ export default class PointCloud {
             this.vertices = vertices = this.plyGeometryToVertices(this.geometry); //wow what
         }
 
-        vertices.forEach(point => {
-            
-            //TODO: Customization of point visualization -> sphere/cube/prism w/e;
-            let geometry = new SphereGeometry(this.scale/80, 8, 8);
-            let material = new MeshLambertMaterial({ color: 0x0055ff });
+        let LOD = new THREE.LOD();
 
-            let sphere = new Mesh(geometry, material);
-            sphere.position.x = point[0] * this.scale;
-            sphere.position.y = point[1] * this.scale;
-            sphere.position.z = point[2] * this.scale;
-            
-            this.sphere_geometry.add(sphere);
-        })
+        for (let i = 0; i <= 3; i++) {
 
-        this.model = this.sphere_geometry;
-        this.sphere_geometry.rotation.x = -Math.PI/2;
+            let level = new THREE.Group();
+
+            vertices.forEach(point => {
+                
+                //TODO: Customization of point visualization -> sphere/cube/prism w/e;
+                let geometry = new IcosahedronBufferGeometry(this.scale/80, 3 - i);
+                let material = new MeshLambertMaterial({ color: 0x0055ff });
+
+                let sphere = new Mesh(geometry, material);
+                sphere.position.x = point[0] * this.scale;
+                sphere.position.y = point[1] * this.scale;
+                sphere.position.z = point[2] * this.scale;
+                
+                level.add(sphere);
+            })
+            
+            level.rotation.y = Math.PI/2;
+
+            LOD.addLevel(level, i*90);
+        }
+
+        this.model = this.sphere_geometry = LOD;
 
         return this.sphere_geometry;
     }

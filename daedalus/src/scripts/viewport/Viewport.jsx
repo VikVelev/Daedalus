@@ -96,8 +96,8 @@ class Viewport extends Component {
 		//Initilize base event listeners and start animation loop
 		
 		//Indices are really important for the coordinate calculation of the disk chooser //*see? reference up
-		this.load3DModel("models/test.ply", 0);
-		this.load3DModel("models/test1.ply", 1);
+		this.props.store.loadModel(this.scene, "models/test.ply", 0);
+		this.props.store.loadModel(this.scene, "models/test1.ply", 1);
 
 		//Configure Camera
 		this.camera = this.camerasTable[this.props.store.state]().camera;
@@ -211,16 +211,6 @@ class Viewport extends Component {
 
 	}
 
-	load3DModel(path, index) {
-		let pc = new PointCloud(this.props.store, path, this.scene);
-
-		//TODO: REFACTOR THIS SHIT
-		this.props.store.addModel(pc);
-		this.props.store.stackPush(path, index);
-		
-		pc.load();
-	}
-
 	onWindowResize = () => {
 		
 		this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -252,15 +242,22 @@ class Viewport extends Component {
 			let chosen = this.props.store.currentlyChosenModel;
 			//console.log(this.props.store.loadedModels[chosen]);
 			if(this.props.store.loadedModels[chosen] !== undefined) {
-				this.props.store.loadedModels[chosen].rotation.z += 0.001;
+				this.props.store.loadedModels[chosen].rotation.y += 0.001;
 			}
 		}
+
+		this.scene.traverse(( object ) => {
+			if ( object instanceof THREE.LOD ) {
+				object.update( this.camera );
+			}
+		} );
 
 		this.renderScene();
 		this.frameId = window.requestAnimationFrame(this.animate);
 	}
 
 	renderScene = () => {
+
 		this.renderer.render(this.scene, this.camera);
 	}
 
