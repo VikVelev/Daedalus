@@ -85,11 +85,8 @@ export default class PointCloud {
             object = this.convertToSphereCloud(this.vertices);
         }
 
-        console.log("what???2");
-        console.log(this.store.indexStack)
         let coords = calculateCoordinates(this.store.indexStack[this.filename]);
 
-        console.log(coords);
         object.position.x = coords.x * this.scale;
         object.position.z = coords.y * this.scale;
 
@@ -97,18 +94,19 @@ export default class PointCloud {
 
         this.scene.add(object);
         this.scene_objects.push(object);
+        this.store.addLoaded(object, this);
         //Calculate object coordinates based on index
     }
 
     load = () => {
         //TODO: REFACTOR THIS
 
-        if (Object.keys(this.store.indexStack).length > 1 && this.store.state === "PREVIEW") {
+        if (Object.keys(this.store.indexStack).length > 2 && this.store.state === "PREVIEW") {
             console.warn("YOU ARE IN PREVIEW MODE, no more than one model allowed");
         }
 
         if (this.store.state === "GENERATION" ||
-           (Object.keys(this.store.indexStack).length <= 1 && 
+           (Object.keys(this.store.indexStack).length <= 2 && 
             this.store.state === "PREVIEW")) {
 
             if(this.type === "ply") {
@@ -127,6 +125,12 @@ export default class PointCloud {
         }
 
 
+    }
+
+    opacity(opacity) {
+        this.sphere_geometry.traverse((sphere) => {
+            sphere.material = new MeshLambertMaterial({ color: 0x0055ff, transparent: true, opacity: opacity });
+        })
     }
 
     plyGeometryToVertices(geometry) {

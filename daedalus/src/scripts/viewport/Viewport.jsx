@@ -61,7 +61,7 @@ class Viewport extends Component {
 		//Everytime the chosen model changes, change the selected shit
 		autorun(() => {
 			//console.log(this.props.store, this.props.store.currentlyChosenModel)
-			for (let i = 0; i < this.chooser.disks.length; i++) {
+			for (let i = 0; i < this.props.store.loadedModels.length; i++) {
 
 				let chosen = this.props.store.currentlyChosenModel;
 
@@ -72,6 +72,9 @@ class Viewport extends Component {
 					side: THREE.DoubleSide
 				});
 
+				this.chooser.lights[i].intensity = 0;
+				this.props.store.loadedPointClouds[i].opacity(0.2);
+
 				if (chosen === i) {
 
 					this.chooser.disks[chosen].material = new THREE.MeshLambertMaterial({ 
@@ -80,6 +83,10 @@ class Viewport extends Component {
 						opacity: 0.7 ,
 						side: THREE.DoubleSide
 					});
+
+					this.props.store.loadedPointClouds[chosen].opacity(1);
+
+					this.chooser.lights[chosen].intensity = 3;
 
 				}
 			}
@@ -243,9 +250,9 @@ class Viewport extends Component {
 		// console.log(this.props.store.loadedModels.length);
 		if(this.props.store.loadedModels.length > 0) {
 			let chosen = this.props.store.currentlyChosenModel;
-
-			if(this.props.store.loadedModels[chosen].model !== undefined) {
-				this.props.store.loadedModels[chosen].model.rotation.z += 0.001;
+			//console.log(this.props.store.loadedModels[chosen]);
+			if(this.props.store.loadedModels[chosen] !== undefined) {
+				this.props.store.loadedModels[chosen].rotation.z += 0.001;
 			}
 		}
 

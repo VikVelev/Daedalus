@@ -30,6 +30,7 @@ export function calculateCoordinates(index) {
 class DiscChooser extends Component {
     
     disks = [];
+    lights = [];
 
     constructor(props){
         super(props);
@@ -53,7 +54,8 @@ class DiscChooser extends Component {
 
     // Should be used in a loop with all the positions
     generateDisc(index) {
-
+        let group = new THREE.Group();
+    
         let geometry = new THREE.CircleGeometry(30, 32);
         let material
         
@@ -75,7 +77,15 @@ class DiscChooser extends Component {
         circle.rotation.x += -Math.PI/2;
         this.disks.push(circle);
 
-        return circle;
+        /* Light */
+        let light = new THREE.PointLight( 0xffe300, 2, 100 );
+        light.position.set( circle.position.x, circle.position.y + 80, circle.position.z );
+        this.lights.push(light);
+
+        group.add( light );
+        group.add( circle );
+
+        return group;
     }
 }
 
