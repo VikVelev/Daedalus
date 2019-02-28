@@ -37,15 +37,6 @@ class Viewport extends Component {
 		this.camera.position.x = 30
 		this.camera.position.y = 50
 
-<<<<<<< HEAD
-		this.controls = new OrbitControls( this.camera, this.mount );
-		this.controls.autoRotate = true;
-		this.controls.dampingFactor = 0.3; // friction
-		this.controls.rotateSpeed = 0.3; // mouse sensitivity
-		this.controls.maxDistance = 300;
-
-=======
->>>>>>> 84a089fb158471cfd68a54c8cc4910800251ff12
 		//TODO: Incorporate TransformControls in the future
 
 		//Configure Renderer
@@ -63,18 +54,10 @@ class Viewport extends Component {
 		
 		this.load3DModel("models/test.ply", 0);
 		this.load3DModel("models/test1.ply", 1);
-<<<<<<< HEAD
-		this.load3DModel("models/test2.ply", 2);
-		this.load3DModel("models/test (copy).ply", 3);
-		this.load3DModel("models/test1 (copy).ply", 4);
-		this.load3DModel("models/test2 (copy).ply", 5);
-		this.load3DModel("models/test3.ply", 6);
-=======
 		// this.load3DModel("models/test2.ply", 2);
 		// this.load3DModel("models/test (copy).ply", 3);
 		// this.load3DModel("models/test1 (copy).ply", 4);
 		// this.load3DModel("models/test2 (copy).ply", 5);
->>>>>>> 84a089fb158471cfd68a54c8cc4910800251ff12
 
 		this.onWindowResize();
 		this.start();
