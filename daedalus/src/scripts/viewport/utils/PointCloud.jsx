@@ -1,7 +1,7 @@
 
 import PLYLoader from './PLYLoader.jsx';
 import MTLLoader from './MTLLoader.jsx';
-import { calculateCoordinates } from './DiscChooser'
+import DiscChooser from './DiscChooser'
 import { 
     MeshLambertMaterial,
     SphereGeometry, 
@@ -86,7 +86,7 @@ export default class PointCloud {
         }
 
 
-        let coords = calculateCoordinates(this.store.indexStack[this.filename]);
+        let coords = new DiscChooser().calculateCoordinates(this.store.indexStack[this.filename]);
 
         object.position.x = coords.x * this.scale;
         object.position.z = coords.y * this.scale;
@@ -99,21 +99,32 @@ export default class PointCloud {
     }
 
     load = () => {
-
-        if(this.type === "ply") {
-
-            this.loader.load(this.filename, this.callbackOnLoad);
-
-        } else if (this.type === "obj") {
-
-            this.loader.load(this.filename,
-                             this.callbackOnLoad,
-                             this.callbackOnProgress,
-                             this.callbackOnError,
-                             null,
-                             false)
-
+        //REFACTOR THIS
+        
+        if (Object.keys(this.store.indexStack).length > 1 && this.store.state === "PREVIEW") {
+            console.warn("YOU ARE IN PREVIEW MODE, no more than one model allowed");
         }
+
+        if (this.store.state === "GENERATION" ||
+           (Object.keys(this.store.indexStack).length <= 1 && 
+            this.store.state === "PREVIEW")) {
+
+            if(this.type === "ply") {
+                
+                this.loader.load(this.filename, this.callbackOnLoad);
+                
+            } else if (this.type === "obj") {
+                
+                this.loader.load(this.filename,
+                    this.callbackOnLoad,
+                    this.callbackOnProgress,
+                    this.callbackOnError,
+                    null,
+                    false)        
+            }
+        }
+
+
     }
 
     plyGeometryToVertices(geometry) {

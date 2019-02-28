@@ -4,6 +4,8 @@ class Store {
 
     @observable loadedModels = [];
     @observable indexStack = {};
+    @observable currentlyChosenModel = {};
+    @observable availableModels = []; 
     @observable state = "PREVIEW"
     @observable stateTable = {
         "GENERATION" : "PREVIEW",

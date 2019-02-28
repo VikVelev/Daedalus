@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { autorun } from 'mobx';
 
 import PointCloud from './utils/PointCloud.jsx';
-
+import DiskChooser from './utils/DiscChooser.jsx';
 
 import * as THREE from 'three'
 
@@ -14,10 +14,17 @@ import OrbitControls from 'threejs-orbit-controls';
 @observer
 class Viewport extends Component {
 
-	controls = {
-		"PREVIEW": this.previewCameraControls.bind(this),
-		"GENERATING": this.generatingCameraControls.bind(this),
+	//Here store the functions used to generate the cameras
+	camerasTable = {
+		"PREVIEW": this.previewCamera.bind(this),
+		"GENERATION": this.generationCamera.bind(this),
 	}
+
+	//Here store actual references to the cameras so I don't create new ones every time.
+	cameras = {
+		"PREVIEW": null,
+		"GENERATION": null,
+	};
 
 	componentDidMount() {
 
@@ -25,6 +32,8 @@ class Viewport extends Component {
 		this.height = this.mount.clientHeight
 
 		// Initialize basic scene
+
+		
 		this.scene = new THREE.Scene();
 		this.scene.add( new THREE.HemisphereLight( 0x443333, 0x111122 ) );
 		this.scene.add( new THREE.AmbientLight( 0xFFFFFF, 0.3 ) );
@@ -32,11 +41,8 @@ class Viewport extends Component {
 		this.addSkybox();
 
 		//Configure Camera
-		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 2000 );
-		this.camera.position.z = 70
-		this.camera.position.x = 30
-		this.camera.position.y = 50
-
+		this.camera = this.camerasTable[this.props.store.state]().camera;
+		this.controls = this.camerasTable[this.props.store.state]().controls;
 		//TODO: Incorporate TransformControls in the future
 
 		//Configure Renderer
@@ -44,36 +50,76 @@ class Viewport extends Component {
 		this.renderer.setClearColor('#000000');
 		this.mount.appendChild(this.renderer.domElement);
 		
-		this.controls[this.props.store.state]();
-
-
-		autorun(() => this.controls[this.props.store.state]())
+		autorun(() => {
+			console.log(this.camerasTable[this.props.store.state](), this.props.store.state)
+			this.camera = this.camerasTable[this.props.store.state]().camera;
+			this.controls = this.camerasTable[this.props.store.state]().controls;
+		});
 
 		window.addEventListener( 'resize', this.onWindowResize, false );
 		//Initilize base event listeners and start animation loop
-		
+		this.chooser = new DiskChooser();
 		this.load3DModel("models/test.ply", 0);
 		this.load3DModel("models/test1.ply", 1);
 		// this.load3DModel("models/test2.ply", 2);
 		// this.load3DModel("models/test (copy).ply", 3);
 		// this.load3DModel("models/test1 (copy).ply", 4);
 		// this.load3DModel("models/test2 (copy).ply", 5);
+		for (let i = 0; i < 12; i++) {
+			this.scene.add(this.chooser.generateDisc(i));
+		}
+		console.log(this.chooser.disks);
 
 		this.onWindowResize();
 		this.start();
 	}
 
-	previewCameraControls() {
-		
-		this.controls = new OrbitControls( this.camera, this.mount );
-		this.controls.dampingFactor = 0.3; // friction
-		this.controls.rotateSpeed = 0.3; // mouse sensitivity
-		this.controls.maxDistance = 300;
+	previewCamera() {
+		if (this.cameras["PREVIEW"] === null) {
+			let camera 
 
-	}
+			camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 2000 );
 	
-	generatingCameraControls() {
-		this.controls.enabled = false;
+			camera.position.z = 70
+			camera.position.x = 30
+			camera.position.y = 50
+	
+			let controls = new OrbitControls( camera );
+			controls.dampingFactor = 0.3; // friction
+			controls.rotateSpeed = 0.2; // mouse sensitivity
+			controls.maxDistance = 500;
+
+			let object = { camera: camera, controls: controls } ;
+			this.cameras["PREVIEW"] = object;
+
+			return object
+		}
+
+		return this.cameras["PREVIEW"];
+
+	}	
+	
+	generationCamera() {
+		if (this.cameras["GENERATION"] === null) {
+			let camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 2000 );
+			camera.position.z = 70
+			camera.position.x = 30
+			camera.position.y = 50
+
+			let controls;
+
+			controls = new OrbitControls( camera );			
+			controls.dampingFactor = 0.3; // friction
+			controls.rotateSpeed = 0; // mouse sensitivity
+			controls.maxDistance = 500;
+
+			let object = { camera: camera, controls: controls } ;
+			this.cameras["GENERATION"] = object;
+
+			return object;
+		} 
+
+		return this.cameras["GENERATION"];
 	}
 
 	addSkybox() {
