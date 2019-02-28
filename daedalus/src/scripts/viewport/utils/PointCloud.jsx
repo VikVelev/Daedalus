@@ -1,7 +1,7 @@
 
 import PLYLoader from './PLYLoader.jsx';
 import MTLLoader from './MTLLoader.jsx';
-import DiscChooser from './DiscChooser'
+import { calculateCoordinates } from './DiscChooser'
 import { 
     MeshLambertMaterial,
     SphereGeometry, 
@@ -85,9 +85,11 @@ export default class PointCloud {
             object = this.convertToSphereCloud(this.vertices);
         }
 
+        console.log("what???2");
+        console.log(this.store.indexStack)
+        let coords = calculateCoordinates(this.store.indexStack[this.filename]);
 
-        let coords = new DiscChooser().calculateCoordinates(this.store.indexStack[this.filename]);
-
+        console.log(coords);
         object.position.x = coords.x * this.scale;
         object.position.z = coords.y * this.scale;
 
@@ -99,8 +101,8 @@ export default class PointCloud {
     }
 
     load = () => {
-        //REFACTOR THIS
-        
+        //TODO: REFACTOR THIS
+
         if (Object.keys(this.store.indexStack).length > 1 && this.store.state === "PREVIEW") {
             console.warn("YOU ARE IN PREVIEW MODE, no more than one model allowed");
         }
@@ -151,7 +153,7 @@ export default class PointCloud {
         vertices.forEach(point => {
             
             //TODO: Customization of point visualization -> sphere/cube/prism w/e;
-            let geometry = new SphereGeometry(this.scale/80, 2, 2);
+            let geometry = new SphereGeometry(this.scale/80, 8, 8);
             let material = new MeshLambertMaterial({ color: 0x0055ff });
 
             let sphere = new Mesh(geometry, material);

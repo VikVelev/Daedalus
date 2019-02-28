@@ -4,12 +4,26 @@ class Store {
 
     @observable loadedModels = [];
     @observable indexStack = {};
-    @observable currentlyChosenModel = {};
+    @observable currentlyChosenModel = 0;
     @observable availableModels = []; 
     @observable state = "PREVIEW"
     @observable stateTable = {
         "GENERATION" : "PREVIEW",
         "PREVIEW" : "GENERATION"
+    }
+
+    @action previousModel() {
+        this.currentlyChosenModel++;
+        if (this.currentlyChosenModel > 11) {
+            this.currentlyChosenModel = 0;
+        }
+    }
+
+    @action nextModel() {
+        this.currentlyChosenModel--;
+        if(this.currentlyChosenModel < 0) {
+            this.currentlyChosenModel = 11;
+        }
     }
 
     @action addModel(pc) {

@@ -10,8 +10,8 @@ class Options extends Component {
     }
 
     buttons = [
-        { icon: "assistive listening systems", text: "test", onClick: this.openConsole},
-        { icon: "assistive listening systems", text: "test", onClick: this.openConsole},
+        { icon: "arrow left", text: "Previous", onClick: this.props.store.previousModel.bind(this.props.store)},
+        { icon: "arrow right", text: "Next", onClick: this.props.store.nextModel.bind(this.props.store)},
         { icon: "assistive listening systems", text: "test", onClick: this.openConsole},
     ]
 

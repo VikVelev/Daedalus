@@ -6,6 +6,7 @@ import PointCloud from './utils/PointCloud.jsx';
 import DiskChooser from './utils/DiscChooser.jsx';
 
 import * as THREE from 'three'
+import { DoubleSide } from 'three';
 
 import '../../styles/Viewport.css'
 
@@ -27,6 +28,7 @@ class Viewport extends Component {
 	};
 
 	componentDidMount() {
+		//TODO: REFACTOOOOOR
 
 		this.width = this.mount.clientWidth
 		this.height = this.mount.clientHeight
@@ -39,51 +41,79 @@ class Viewport extends Component {
 		this.addShadowedLight( 1, 1, 1, 0xffffff, 1.35 );
 		this.addSkybox();
 
-		//Configure Camera
-		this.camera = this.camerasTable[this.props.store.state]().camera;
-		this.controls = this.camerasTable[this.props.store.state]().controls;
-		//TODO: Incorporate TransformControls in the future
+		this.chooser = new DiskChooser(this.props.store);
+		
+		for (let i = 0; i < 12; i++) {
+			this.scene.add(this.chooser.generateDisc(i)); //see?
+		}
 
 		//Configure Renderer
 		this.renderer = new THREE.WebGLRenderer({ antialias: true });
 		this.renderer.setClearColor('#000000');
 		this.mount.appendChild(this.renderer.domElement);
 		
+		//Everytime the state changes, change the camera and controls
 		autorun(() => {
 			this.camera = this.camerasTable[this.props.store.state]().camera;
 			this.controls = this.camerasTable[this.props.store.state]().controls;
 		});
 
+		//Everytime the chosen model changes, change the selected shit
+		autorun(() => {
+			//console.log(this.props.store, this.props.store.currentlyChosenModel)
+			for (let i = 0; i < this.chooser.disks.length; i++) {
+
+				let chosen = this.props.store.currentlyChosenModel;
+
+				this.chooser.disks[i].material = new THREE.MeshLambertMaterial({ 
+					color: 0x165a8c,
+					transparent: true,
+					opacity: 0.7,
+					side: THREE.DoubleSide
+				});
+
+				if (chosen === i) {
+
+					this.chooser.disks[chosen].material = new THREE.MeshLambertMaterial({ 
+						color: 0x28a4ff, 
+						transparent: true, 
+						opacity: 0.7 ,
+						side: THREE.DoubleSide
+					});
+
+				}
+			}
+		});
+
 		window.addEventListener( 'resize', this.onWindowResize, false );
 		//Initilize base event listeners and start animation loop
-
-		//REFACTOOOOOR
-		this.chooser = new DiskChooser();
-
-
-		//Indices are really important for the coordinate calculation of the disk chooser
+		
+		//Indices are really important for the coordinate calculation of the disk chooser //*see? reference up
 		this.load3DModel("models/test.ply", 0);
 		this.load3DModel("models/test1.ply", 1);
 
-		for (let i = 0; i < 12; i++) {
-			this.scene.add(this.chooser.generateDisc(i)); //see?
-		}
-		console.log(this.chooser.disks);
+		//Configure Camera
+		this.camera = this.camerasTable[this.props.store.state]().camera;
+		this.controls = this.camerasTable[this.props.store.state]().controls;
+		//TODO: Incorporate TransformControls in the future
 
 		this.onWindowResize();
 		this.start();
 	}
 
 	previewCamera() {
+		this.chooser.hideDisks();
 
 		if (this.cameras["PREVIEW"] === null) {
 			let camera 
 
 			camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 2000 );
-	
-			camera.position.z = 70
-			camera.position.x = 30
-			camera.position.y = 50
+			// console.log(this.props.store.loadedModels.length);
+			// camera.view = this.props.store.loadedModels[this.props.store.currentlyChosenModel];
+
+			camera.position.x = 300
+			camera.position.y = 10
+			camera.position.z = 2
 	
 			let controls = new OrbitControls( camera );
 			controls.dampingFactor = 0.3; // friction
@@ -102,13 +132,14 @@ class Viewport extends Component {
 	}	
 	
 	generationCamera() {
-
+		this.chooser.showDisks();
 		
 		if (this.cameras["GENERATION"] === null) {
-			let camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 2000 );
-			camera.position.z = 70
-			camera.position.x = 30
-			camera.position.y = 50
+
+			let camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 4000 );
+			camera.position.x = 300
+			camera.position.y = 10
+			camera.position.z = 2
 			
 			let controls;
 			
@@ -120,6 +151,7 @@ class Viewport extends Component {
 			
 			return object;
 		} 
+
 		//I need to disable just the Preview one, cause the GENERATION one is disabled by default
 		this.cameras["PREVIEW"].controls.enabled = false;
 		return this.cameras["GENERATION"];
@@ -175,9 +207,10 @@ class Viewport extends Component {
 	load3DModel(path, index) {
 		let pc = new PointCloud(this.props.store, path, this.scene);
 
+		//TODO: REFACTOR THIS SHIT
 		this.props.store.addModel(pc);
 		this.props.store.stackPush(path, index);
-
+		
 		pc.load();
 	}
 
@@ -207,8 +240,13 @@ class Viewport extends Component {
 	}
 
 	animate = () => {
-		if(this.props.store.loadedModels[0].model !== undefined) {
-			this.props.store.loadedModels[0].model.rotation.z += 0.001;
+		// console.log(this.props.store.loadedModels.length);
+		if(this.props.store.loadedModels.length > 0) {
+			let chosen = this.props.store.currentlyChosenModel;
+
+			if(this.props.store.loadedModels[chosen].model !== undefined) {
+				this.props.store.loadedModels[chosen].model.rotation.z += 0.001;
+			}
 		}
 
 		this.renderScene();
