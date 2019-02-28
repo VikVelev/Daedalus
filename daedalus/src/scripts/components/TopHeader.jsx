@@ -20,6 +20,7 @@ class TopHeader extends Component {
 
     toggleModes = () => {
         this.props.store.nextViewportState();
+        //console.log(this.props.store)
     }
 
     render() {

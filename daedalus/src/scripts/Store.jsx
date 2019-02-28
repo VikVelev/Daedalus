@@ -4,9 +4,14 @@ class Store {
 
     @observable loadedModels = [];
     @observable indexStack = {};
+    @observable state = "PREVIEW"
+    @observable stateTable = {
+        "GENERATION" : "PREVIEW",
+        "PREVIEW" : "GENERATION"
+    }
 
     @action addModel(pc) {
-        console.log(pc);
+        //console.log(pc);
         this.loadedModels.push(pc);
     }
 
@@ -24,12 +29,6 @@ class Store {
 
     @observable menuFrame = {
         toggleTopHeader: true,
-        //type: "GENERATION"
-        type: "PREVIEW",
-        table: {
-            "GENERATION" : "PREVIEW",
-            "PREVIEW" : "GENERATION"
-        }
     }
 
     @observable options = {
@@ -48,12 +47,11 @@ class Store {
     }
 
     @observable viewport = {
-        generating: this.menuFrame.type === "GENERATION",
-        preview: this.menuFrame.type === "PREVIEW",
+        state: this.state
     }
 
     @action nextViewportState() {
-        this.menuFrame.type = this.menuFrame.table[this.menuFrame.type]
+        this.state = this.stateTable[this.state]
     }
 }
 

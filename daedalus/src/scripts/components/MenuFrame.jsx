@@ -15,9 +15,9 @@ class MenuFrame extends Component {
     render() {
         return (
             <div className={this.props.className}>
-                <TopHeader store={this.props.store} {...this.props.store.menuFrame}/>
+                <TopHeader store={this.props.store} {...this.props.store.menuFrame} type={this.props.store.state}/>
                 {this.props.children} {/* .children === Viewport */}
-                <Options store={this.props.store} type={this.props.store.menuFrame.type}/>
+                <Options store={this.props.store} type={this.props.store.state}/>
             </div>
         )
     }

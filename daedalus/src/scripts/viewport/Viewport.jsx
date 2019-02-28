@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { autorun } from 'mobx';
 
 import PointCloud from './utils/PointCloud.jsx';
 
@@ -12,6 +13,11 @@ import OrbitControls from 'threejs-orbit-controls';
 
 @observer
 class Viewport extends Component {
+
+	controls = {
+		"PREVIEW": this.previewCameraControls.bind(this),
+		"GENERATING": this.generatingCameraControls.bind(this),
+	}
 
 	componentDidMount() {
 
@@ -31,31 +37,43 @@ class Viewport extends Component {
 		this.camera.position.x = 30
 		this.camera.position.y = 50
 
-		this.controls = new OrbitControls( this.camera, this.mount );
-		this.controls.dampingFactor = 0.3; // friction
-		this.controls.rotateSpeed = 0.3; // mouse sensitivity
-		this.controls.maxDistance = 300;
-
 		//TODO: Incorporate TransformControls in the future
 
 		//Configure Renderer
 		this.renderer = new THREE.WebGLRenderer({ antialias: true });
 		this.renderer.setClearColor('#000000');
 		this.mount.appendChild(this.renderer.domElement);
+		
+		this.controls[this.props.store.state]();
 
-		//Initilize base event listeners and start animation loop
+
+		autorun(() => this.controls[this.props.store.state]())
+
 		window.addEventListener( 'resize', this.onWindowResize, false );
-
+		//Initilize base event listeners and start animation loop
+		
 		this.load3DModel("models/test.ply", 0);
 		this.load3DModel("models/test1.ply", 1);
-		this.load3DModel("models/test2.ply", 2);
-		this.load3DModel("models/test (copy).ply", 3);
-		this.load3DModel("models/test1 (copy).ply", 4);
-		this.load3DModel("models/test2 (copy).ply", 5);
+		// this.load3DModel("models/test2.ply", 2);
+		// this.load3DModel("models/test (copy).ply", 3);
+		// this.load3DModel("models/test1 (copy).ply", 4);
+		// this.load3DModel("models/test2 (copy).ply", 5);
+
 		this.onWindowResize();
 		this.start();
+	}
 
-		//this.loadedModels[1].geometry.position.x = 100;
+	previewCameraControls() {
+		
+		this.controls = new OrbitControls( this.camera, this.mount );
+		this.controls.dampingFactor = 0.3; // friction
+		this.controls.rotateSpeed = 0.3; // mouse sensitivity
+		this.controls.maxDistance = 300;
+
+	}
+	
+	generatingCameraControls() {
+		this.controls.enabled = false;
 	}
 
 	addSkybox() {
@@ -82,11 +100,13 @@ class Viewport extends Component {
 
 		let directionalLight = new THREE.DirectionalLight( color, intensity );
 		directionalLight.position.set( x, y, z );
+		
 		this.scene.add( directionalLight );
 
 		directionalLight.castShadow = true;
 
 		let d = 50;
+
 		directionalLight.shadow.camera.left = - d;
 		directionalLight.shadow.camera.right = d;
 		directionalLight.shadow.camera.top = d;
@@ -112,9 +132,11 @@ class Viewport extends Component {
 	}
 
 	onWindowResize = () => {
+		
 		this.camera.aspect = window.innerWidth / window.innerHeight;
 		this.camera.updateProjectionMatrix();
 		this.renderer.setSize( window.innerWidth, window.innerHeight);
+	
 	}
 
 	componentWillUnmount() {
@@ -123,9 +145,11 @@ class Viewport extends Component {
 	}
 
 	start = () => {
+
 		if (!this.frameId) {
 			this.frameId = requestAnimationFrame(this.animate);
 		}
+
 	}
 
 	stop = () => {
