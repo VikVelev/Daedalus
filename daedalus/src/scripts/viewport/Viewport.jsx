@@ -31,8 +31,7 @@ class Viewport extends Component {
 		this.width = this.mount.clientWidth
 		this.height = this.mount.clientHeight
 
-		// Initialize basic scene
-
+		// Initialize basic scen
 		
 		this.scene = new THREE.Scene();
 		this.scene.add( new THREE.HemisphereLight( 0x443333, 0x111122 ) );
@@ -51,22 +50,23 @@ class Viewport extends Component {
 		this.mount.appendChild(this.renderer.domElement);
 		
 		autorun(() => {
-			console.log(this.camerasTable[this.props.store.state](), this.props.store.state)
 			this.camera = this.camerasTable[this.props.store.state]().camera;
 			this.controls = this.camerasTable[this.props.store.state]().controls;
 		});
 
 		window.addEventListener( 'resize', this.onWindowResize, false );
 		//Initilize base event listeners and start animation loop
+
+		//REFACTOOOOOR
 		this.chooser = new DiskChooser();
+
+
+		//Indices are really important for the coordinate calculation of the disk chooser
 		this.load3DModel("models/test.ply", 0);
 		this.load3DModel("models/test1.ply", 1);
-		// this.load3DModel("models/test2.ply", 2);
-		// this.load3DModel("models/test (copy).ply", 3);
-		// this.load3DModel("models/test1 (copy).ply", 4);
-		// this.load3DModel("models/test2 (copy).ply", 5);
+
 		for (let i = 0; i < 12; i++) {
-			this.scene.add(this.chooser.generateDisc(i));
+			this.scene.add(this.chooser.generateDisc(i)); //see?
 		}
 		console.log(this.chooser.disks);
 
@@ -75,6 +75,7 @@ class Viewport extends Component {
 	}
 
 	previewCamera() {
+
 		if (this.cameras["PREVIEW"] === null) {
 			let camera 
 
@@ -95,34 +96,37 @@ class Viewport extends Component {
 			return object
 		}
 
+		this.cameras["PREVIEW"].controls.enabled = true;
 		return this.cameras["PREVIEW"];
 
 	}	
 	
 	generationCamera() {
+
+		
 		if (this.cameras["GENERATION"] === null) {
 			let camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 2000 );
 			camera.position.z = 70
 			camera.position.x = 30
 			camera.position.y = 50
-
+			
 			let controls;
-
+			
 			controls = new OrbitControls( camera );			
-			controls.dampingFactor = 0.3; // friction
-			controls.rotateSpeed = 0; // mouse sensitivity
-			controls.maxDistance = 500;
-
+			controls.enabled = false;
+			
 			let object = { camera: camera, controls: controls } ;
 			this.cameras["GENERATION"] = object;
-
+			
 			return object;
 		} 
-
+		//I need to disable just the Preview one, cause the GENERATION one is disabled by default
+		this.cameras["PREVIEW"].controls.enabled = false;
 		return this.cameras["GENERATION"];
 	}
 
 	addSkybox() {
+
 		let imagePrefix = "images/nightsky_";
 		let directions  = ["ft", "bk", "up", "dn", "rt", "lf"];
 		let imageSuffix = ".png";
@@ -203,12 +207,11 @@ class Viewport extends Component {
 	}
 
 	animate = () => {
-		if(this.model !== undefined) {
-			this.model.rotation.x += 0.01;
-			this.model.rotation.y += 0.01;
+		if(this.props.store.loadedModels[0].model !== undefined) {
+			this.props.store.loadedModels[0].model.rotation.z += 0.001;
 		}
 
-		this.renderScene()
+		this.renderScene();
 		this.frameId = window.requestAnimationFrame(this.animate);
 	}
 

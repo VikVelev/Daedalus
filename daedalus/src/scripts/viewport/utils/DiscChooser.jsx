@@ -14,6 +14,7 @@ import * as THREE from 'three';
 class DiscChooser extends Component {
     
     disks = []
+    currentlyChosen = 0;
 
     calculateCoordinates(index) {
 
