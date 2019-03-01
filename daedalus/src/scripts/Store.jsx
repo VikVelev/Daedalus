@@ -1,4 +1,4 @@
-import { autorun, observable, action } from "mobx";
+import { autorun, observable, action, computed } from "mobx";
 import PointCloud from './viewport/utils/PointCloud.jsx'
 
 class Store {
@@ -43,11 +43,32 @@ class Store {
 
     @action addModel(pc) {
         //console.log(pc);
-        this.availableModels.push(pc);
+        let add = true;
+
+        for (let i = 0; i < this.availableModels.length; i++) {
+            if (pc.hash == this.availableModels[i].hash) {
+                add = false;
+            }
+        }
+
+        console.log(add);
+        if (add) {
+            this.availableModels.push(pc);
+        }
     }
+
 
     @action addLoaded(object, pc) {
         this.loadedModels.push(object);
+        
+        let add = true;
+
+        for (let i = 0; i < this.availableModels.length; i++) {
+            if (pc.hash == this.availableModels[i].hash) {
+                add = false;
+            }
+        }
+        
         this.loadedPointClouds.push(pc);
     }
 
@@ -69,6 +90,15 @@ class Store {
 		this.stackPush(path, index);
 		
 		pc.load();
+    }
+
+    @action removeModel = (scene, path, index) => {
+        if (scene === null) {
+            this.sceneRef.remove(this.loadedModels[index]);
+            this.loadedModels.splice(index, 1);
+            this.loadedPointClouds.splice(index, 1);
+            //this.indexStack.splice(index, 1);
+        }
     }
 
     @observable loading = {

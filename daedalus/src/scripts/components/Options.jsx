@@ -9,10 +9,15 @@ class Options extends Component {
         this.props.store.loadModel(null, "models/test2.ply", 2);
     }
 
+    removeModel = () => {
+        this.props.store.removeModel(null, "models/test2.ply", 2);
+    }
+
     buttons = [
         { icon: "arrow left", text: "Previous", onClick: this.props.store.previousModel},
         { icon: "arrow right", text: "Next", onClick: this.props.store.nextModel},
-        { icon: "assistive listening systems", text: "test", onClick: this.loadModel},
+        { icon: "add", text: "Add", onClick: this.loadModel},
+        { icon: "close", text: "Remove", onClick: this.removeModel},
     ]
 
     toggleThis = () => {
