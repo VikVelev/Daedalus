@@ -58,6 +58,10 @@ class Viewport extends Component {
 			this.controls = this.camerasTable[this.props.store.state]().controls;
 		});
 
+		autorun(() => {
+			console.log(this.props.store.availableModels)
+		})
+
 		//Everytime the chosen model changes, change the selected shit
 		autorun(() => {
 			//console.log(this.props.store, this.props.store.currentlyChosenModel)
@@ -77,12 +81,7 @@ class Viewport extends Component {
 
 				if (chosen === i) {
 
-					this.chooser.disks[chosen].material = new THREE.MeshLambertMaterial({ 
-						color: 0x28a4ff, 
-						transparent: true, 
-						opacity: 0.7 ,
-						side: THREE.DoubleSide
-					});
+					this.chooser.disks[chosen].material.color.setStyle("#28a4ff");
 
 					this.props.store.loadedPointClouds[chosen].opacity(1);
 

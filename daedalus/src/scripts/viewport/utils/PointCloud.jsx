@@ -11,9 +11,12 @@ import {
     Mesh, 
 } from 'three';
 
+let hash = require('object-hash');
+
+
 let THREE = require('three');
-let OBJLoader2 = require('./OBJLoader')
-OBJLoader2(THREE, MTLLoader)
+let OBJLoader2 = require('./OBJLoader');
+OBJLoader2(THREE, MTLLoader);
 
 //This should come in use when I get to reading IO, Importing and exporting files;
 // eslint-disable-next-line
@@ -51,9 +54,8 @@ export default class PointCloud {
         this.store = store;
         this.filename = filename;
         this.scene = scene;
-
+        this.hash = hash([this.filename, this.type]);
         this.type = this.filename.slice(-3);
-
         this.loader = this.loaders[this.type];
     }
 
@@ -96,6 +98,7 @@ export default class PointCloud {
         this.scene.add(object);
         this.scene_objects.push(object);
         this.store.addLoaded(object, this);
+        console.log(this.store.loadedPointClouds);
         //Calculate object coordinates based on index
     }
 
@@ -164,7 +167,7 @@ export default class PointCloud {
             vertices.forEach(point => {
                 
                 //TODO: Customization of point visualization -> sphere/cube/prism w/e;
-                let geometry = new IcosahedronBufferGeometry(this.scale/80, 3 - i);
+                let geometry = new IcosahedronBufferGeometry(this.scale/80, 2 - i);
                 let material = new MeshLambertMaterial({ color: 0x0055ff });
 
                 let sphere = new Mesh(geometry, material);
