@@ -114,7 +114,7 @@ class Viewport extends Component {
 		if (this.cameras["PREVIEW"] === null) {
 			let camera 
 
-			camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 2000 );
+			camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 4000 );
 			// console.log(this.props.store.loadedModels.length);
 			// camera.view = this.props.store.loadedModels[this.props.store.currentlyChosenModel];
 
