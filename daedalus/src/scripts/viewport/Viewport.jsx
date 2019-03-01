@@ -27,13 +27,33 @@ class Viewport extends Component {
 		"GENERATION": null,
 	};
 
+	generatingControls = {
+		targetRotation: {
+			x: 0,
+			y: 0
+		},
+		mouse: {
+			x: 0,
+			y: 0
+		},
+		onMouseDown: {
+			targetRotationX: 0,
+			targetRotationY: 0,
+			mouseX: 0,
+			mouseY: 0,
+		},
+		windowHalfX: window.innerWidth / 2,
+		windowHalfY: window.innerHeight / 2,
+		slowingFactor: 0.25,
+	}
+
 	componentDidMount() {
 		//TODO: REFACTOOOOOR
 
 		this.width = this.mount.clientWidth
 		this.height = this.mount.clientHeight
 
-		// Initialize basic scen
+		// Initialize basic scenw
 		
 		this.scene = new THREE.Scene();
 		this.scene.add( new THREE.HemisphereLight( 0x443333, 0x111122 ) );
@@ -58,13 +78,8 @@ class Viewport extends Component {
 			this.controls = this.camerasTable[this.props.store.state]().controls;
 		});
 
-		autorun(() => {
-			console.log(this.props.store.availableModels)
-		})
-
 		//Everytime the chosen model changes, change the selected shit
 		autorun(() => {
-			//console.log(this.props.store, this.props.store.currentlyChosenModel)
 			for (let i = 0; i < this.props.store.loadedModels.length; i++) {
 
 				let chosen = this.props.store.currentlyChosenModel;
@@ -92,6 +107,7 @@ class Viewport extends Component {
 		});
 
 		window.addEventListener( 'resize', this.onWindowResize, false );
+		this.mount.addEventListener( 'mousedown', this.onDocumentMouseDown, false );
 		//Initilize base event listeners and start animation loop
 		
 		//Indices are really important for the coordinate calculation of the disk chooser //*see? reference up
@@ -114,8 +130,6 @@ class Viewport extends Component {
 			let camera 
 
 			camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 4000 );
-			// console.log(this.props.store.loadedModels.length);
-			// camera.view = this.props.store.loadedModels[this.props.store.currentlyChosenModel];
 
 			camera.position.x = 300
 			camera.position.y = 10
@@ -137,7 +151,48 @@ class Viewport extends Component {
 
 	}	
 	
+	onDocumentMouseDown = ( event ) => {
+
+		event.preventDefault();
+
+		this.mount.addEventListener( 'mousemove', this.onDocumentMouseMove, false );
+		this.mount.addEventListener( 'mouseup', this.onDocumentMouseUp, false );
+		this.mount.addEventListener( 'mouseout', this.onDocumentMouseOut, false );
+
+		this.generatingControls.onMouseDown.mouseX = event.clientX - this.generatingControls.windowHalfX;
+		this.generatingControls.onMouseDown.targetRotationX = this.generatingControls.targetRotation.x;
+
+		this.generatingControls.onMouseDown.mouseY = event.clientY - this.generatingControls.windowHalfY;
+		this.generatingControls.onMouseDown.targetRotationY = this.generatingControls.targetRotation.y;
+	}
+
+	onDocumentMouseMove = ( event ) => {
+
+		this.generatingControls.mouse.x = event.clientX - this.generatingControls.windowHalfX;
+
+		this.generatingControls.targetRotation.x = ( this.generatingControls.mouse.x - this.generatingControls.onMouseDown.mouseX ) * 0.00025;
+
+		this.generatingControls.mouse.y = event.clientY - this.generatingControls.windowHalfY;
+
+		this.generatingControls.targetRotation.y = ( this.generatingControls.mouse.y - this.generatingControls.onMouseDown.mouseY ) * 0.00025;
+	}
+
+	onDocumentMouseUp = ( event ) => {
+
+		this.mount.removeEventListener( 'mousemove', this.onDocumentMouseMove, false );
+		this.mount.removeEventListener( 'mouseup', this.onDocumentMouseUp, false );
+		this.mount.removeEventListener( 'mouseout', this.onDocumentMouseOut, false );
+	}
+
+	onDocumentMouseOut = ( event ) => {
+
+		this.mount.removeEventListener( 'mousemove', this.onDocumentMouseMove, false );
+		this.mount.removeEventListener( 'mouseup', this.onDocumentMouseUp, false );
+		this.mount.removeEventListener( 'mouseout', this.onDocumentMouseOut, false );
+	}
+
 	generationCamera() {
+
 		this.chooser.showDisks();
 		
 		if (this.cameras["GENERATION"] === null) {
@@ -149,8 +204,10 @@ class Viewport extends Component {
 			
 			let controls;
 			
-			controls = new OrbitControls( camera );			
-			controls.enabled = false;
+			controls = new OrbitControls( camera );
+			controls.enableZoom = false;
+			controls.enablePan = false;	
+			controls.enableRotate = false;	
 			
 			let object = { camera: camera, controls: controls } ;
 			this.cameras["GENERATION"] = object;
@@ -236,12 +293,11 @@ class Viewport extends Component {
 	}
 
 	animate = () => {
-		// console.log(this.props.store.loadedModels.length);
 		if(this.props.store.loadedModels.length > 0) {
-			let chosen = this.props.store.currentlyChosenModel;
-			//console.log(this.props.store.loadedModels[chosen]);
-			if(this.props.store.loadedModels[chosen] !== undefined) {
-				this.props.store.loadedModels[chosen].rotation.y += 0.001;
+			let model = this.props.store.chosenModelPointCloud;
+
+			if(model !== undefined) {
+				model.rotateAroundWorldAxis(new THREE.Vector3(0, 1, 0), 0.001);
 			}
 		}
 
@@ -249,7 +305,16 @@ class Viewport extends Component {
 			if ( object instanceof THREE.LOD ) {
 				object.update( this.camera );
 			}
-		} );
+		});
+
+		if(this.props.store.state === "GENERATION") {
+			
+			this.props.store.chosenModelPointCloud.rotateAroundWorldAxis( new THREE.Vector3(0, 1, 0), this.generatingControls.targetRotation.x);
+			//this.rotateAroundWorldAxis(this.props.store.chosenModel, new THREE.Vector3(1, 0, 0), this.generatingControls.targetRotation.y);
+
+			this.generatingControls.targetRotation.y = this.generatingControls.targetRotation.y * (1 - this.generatingControls.slowingFactor);
+			this.generatingControls.targetRotation.x = this.generatingControls.targetRotation.x * (1 - this.generatingControls.slowingFactor);
+		}
 
 		this.renderScene();
 		this.frameId = window.requestAnimationFrame(this.animate);

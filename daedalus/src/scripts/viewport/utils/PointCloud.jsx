@@ -98,7 +98,6 @@ export default class PointCloud {
         this.scene.add(object);
         this.scene_objects.push(object);
         this.store.addLoaded(object, this);
-        console.log(this.store.loadedPointClouds);
         //Calculate object coordinates based on index
     }
 
@@ -152,6 +151,27 @@ export default class PointCloud {
         return vertices;
     }
 
+    
+	rotateAroundWorldAxis = ( axis, radians ) => {
+
+		let rotationMatrix = new THREE.Matrix4();
+
+		rotationMatrix.makeRotationAxis( axis.normalize(), radians );
+		rotationMatrix.multiply( this.sphere_geometry.matrix ); 						// pre-multiply
+		this.sphere_geometry.matrix = rotationMatrix;
+		this.sphere_geometry.rotation.setFromRotationMatrix( this.sphere_geometry.matrix );
+
+    }
+    
+	rotateAroundObjectAxis = ( axis, radians) => {
+		let rotationMatrix = new THREE.Matrix4();
+
+		rotationMatrix.makeRotationAxis(axis.normalize(), radians);
+		this.sphere_geometry.matrix.multiply(rotationMatrix);
+		this.sphere_geometry.rotation.setFromRotationMatrix( this.sphere_geometry.matrix );
+
+	}
+
     convertToSphereCloud(vertices) {
 
         if (this.type === "ply") {
@@ -167,7 +187,7 @@ export default class PointCloud {
             vertices.forEach(point => {
                 
                 //TODO: Customization of point visualization -> sphere/cube/prism w/e;
-                let geometry = new IcosahedronBufferGeometry(this.scale/80, 2 - i);
+                let geometry = new IcosahedronBufferGeometry(this.scale/80, 3 - i);
                 let material = new MeshLambertMaterial({ color: 0x0055ff });
 
                 let sphere = new Mesh(geometry, material);
@@ -177,13 +197,12 @@ export default class PointCloud {
                 
                 level.add(sphere);
             })
-            
-            level.rotation.y = Math.PI/2;
 
             LOD.addLevel(level, i*90);
         }
 
         this.model = this.sphere_geometry = LOD;
+        this.rotateAroundObjectAxis( new THREE.Vector3(1, 0, 0), -Math.PI/2);
 
         return this.sphere_geometry;
     }

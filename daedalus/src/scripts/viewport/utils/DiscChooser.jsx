@@ -41,7 +41,7 @@ class DiscChooser extends Component {
     hideDisks() {
         for (let i = 0; i < this.disks.length; i++) {
             if(this.store.currentlyChosenModel !== i) {
-                //this.disks[i].visible = false;
+                this.disks[i].visible = false;
             }
         }
     }

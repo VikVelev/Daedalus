@@ -33,7 +33,7 @@ class Store {
         if (this.loadedModels[this.currentlyChosenModel - 1] !== undefined){
             this.currentlyChosenModel--;
         } else {
-            console.warn("NO SUCH MODEL WITH INDEX", this.currentlyChosenModel + 1);
+            console.warn("NO SUCH MODEL WITH INDEX", (this.currentlyChosenModel - 1 < 0) ? 11 - (this.currentlyChosenModel) : (this.currentlyChosenModel - 1));
         }
 
         if(this.currentlyChosenModel < 0) {
@@ -42,32 +42,22 @@ class Store {
     }
 
     @action addModel(pc) {
-        //console.log(pc);
+
         let add = true;
 
         for (let i = 0; i < this.availableModels.length; i++) {
-            if (pc.hash == this.availableModels[i].hash) {
+            if (pc.hash === this.availableModels[i].hash) {
                 add = false;
             }
         }
 
-        console.log(add);
         if (add) {
             this.availableModels.push(pc);
         }
     }
 
-
     @action addLoaded(object, pc) {
         this.loadedModels.push(object);
-        
-        let add = true;
-
-        for (let i = 0; i < this.availableModels.length; i++) {
-            if (pc.hash == this.availableModels[i].hash) {
-                add = false;
-            }
-        }
         
         this.loadedPointClouds.push(pc);
     }
@@ -99,6 +89,14 @@ class Store {
             this.loadedPointClouds.splice(index, 1);
             //this.indexStack.splice(index, 1);
         }
+    }
+
+    @computed get chosenModel() {
+        return this.loadedModels[this.currentlyChosenModel];
+    }
+
+    @computed get chosenModelPointCloud() {
+        return this.loadedPointClouds[this.currentlyChosenModel];
     }
 
     @observable loading = {
@@ -135,8 +133,8 @@ class Store {
 }
 
 let store = new Store();
-autorun(() => console.log("An update occured:", store));
 
+//REMOVE THIS BEFORE DEPOLOY
 window.store = store;
 
 export default store;
