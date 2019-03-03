@@ -58,14 +58,16 @@ class Viewport extends Component {
 		this.scene = new THREE.Scene();
 		this.scene.add( new THREE.HemisphereLight( 0x443333, 0x111122 ) );
 		this.scene.add( new THREE.AmbientLight( 0xFFFFFF, 0.3 ) );
-		this.addShadowedLight( 1, 1, 1, 0xffffff, 1.35 );
+		this.addShadowedLight( 100, 100, 100, 0xffffff, 1.35 );
 		this.addSkybox();
 
 		this.chooser = new DiskChooser(this.props.store);
 		
 		for (let i = 0; i < 12; i++) {
-			this.scene.add(this.chooser.generateDisc(i)); //see?
+			this.chooser.generateDisc(i); //see?
 		}
+
+		this.scene.add(this.chooser.elements);
 
 		//Configure Renderer
 		this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -92,15 +94,17 @@ class Viewport extends Component {
 				});
 
 				this.chooser.lights[i].intensity = 0;
+				this.chooser.lights[i].distance = 0;
 				this.props.store.loadedPointClouds[i].opacity(0.2);
 
 				if (chosen === i) {
 
 					this.chooser.disks[chosen].material.color.setStyle("#28a4ff");
 
-					this.props.store.loadedPointClouds[chosen].opacity(1);
+					this.props.store.chosenModelPointCloud.opacity(1);
 
 					this.chooser.lights[chosen].intensity = 3;
+					this.chooser.lights[chosen].distance = 100;
 
 				}
 			}
@@ -108,6 +112,7 @@ class Viewport extends Component {
 
 		window.addEventListener( 'resize', this.onWindowResize, false );
 		this.mount.addEventListener( 'mousedown', this.onDocumentMouseDown, false );
+		window.addEventListener( 'keypress', this.onKeypress, false);
 		//Initilize base event listeners and start animation loop
 		
 		//Indices are really important for the coordinate calculation of the disk chooser //*see? reference up
@@ -314,6 +319,14 @@ class Viewport extends Component {
 
 			this.generatingControls.targetRotation.y = this.generatingControls.targetRotation.y * (1 - this.generatingControls.slowingFactor);
 			this.generatingControls.targetRotation.x = this.generatingControls.targetRotation.x * (1 - this.generatingControls.slowingFactor);
+			
+			if(this.props.store.viewport.rotateNext) {
+				this.chooser.rotateDiskNext();
+			}
+
+			if(this.props.store.viewport.rotatePrevious) {
+				this.chooser.rotateDiskPrevious();
+			}
 		}
 
 		this.renderScene();

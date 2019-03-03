@@ -89,6 +89,7 @@
     height: 80px !important;
     text-align: vertical;
     display: flex !important;
+    color: white;
 }
 
 .generating_arrows.arrow.left:before, .generating_arrows.arrow.right:before {

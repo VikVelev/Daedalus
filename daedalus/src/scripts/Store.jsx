@@ -15,10 +15,20 @@ class Store {
         "PREVIEW" : "GENERATION"
     }
 
+    @computed get isPrevious() {
+        return (this.loadedModels[this.currentlyChosenModel + 1] !== undefined)
+    }
+
+    @computed get isNext() {
+        return (this.loadedModels[this.currentlyChosenModel - 1] !== undefined)
+    }
+
     @action previousModel = () => {
 
+        
         if (this.loadedModels[this.currentlyChosenModel + 1] !== undefined){
             this.currentlyChosenModel++;
+            this.viewport.rotatePrevious = true;
         } else {
             console.warn("NO SUCH MODEL WITH INDEX", this.currentlyChosenModel + 1);
         }
@@ -26,19 +36,22 @@ class Store {
         if (this.currentlyChosenModel > 11) {
             this.currentlyChosenModel = 0;
         }
+
     }
 
     @action nextModel = () => {
 
         if (this.loadedModels[this.currentlyChosenModel - 1] !== undefined){
             this.currentlyChosenModel--;
+            this.viewport.rotateNext = true;        
         } else {
-            console.warn("NO SUCH MODEL WITH INDEX", (this.currentlyChosenModel - 1 < 0) ? 11 - (this.currentlyChosenModel) : (this.currentlyChosenModel - 1));
+            console.warn("NO SUCH MODEL WITH INDEX", (this.currentlyChosenModel - 1 < 0) ? 11 + (this.currentlyChosenModel) : (this.currentlyChosenModel - 1));
         }
 
         if(this.currentlyChosenModel < 0) {
             this.currentlyChosenModel = 11;
         }
+    
     }
 
     @action addModel(pc) {
@@ -124,6 +137,8 @@ class Store {
     }
 
     @observable viewport = {
+        rotateNext: false,
+        rotatePrevious: false,        
         state: this.state
     }
 
