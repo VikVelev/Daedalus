@@ -6,10 +6,7 @@ import { Transition, Button } from 'semantic-ui-react';
 class PreviewMenu extends Component {
 
     buttons = [
-        { icon: "arrow left", text: "Previous", onClick: this.props.store.nextModel},
-        { icon: "arrow right", text: "Next", onClick: this.props.store.previousModel},
-        { icon: "add", text: "Add", onClick: this.loadModel},
-        { icon: "close", text: "Remove", onClick: this.removeModel},
+        { icon: "box", text: "Generate", onClick: this.props.store.nextViewportState},
     ]
 
     button = (button, key) => {

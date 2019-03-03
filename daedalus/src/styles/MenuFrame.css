@@ -177,6 +177,10 @@
 
 }
 
+.profile_segment {
+    width: 100% !important;
+}
+
 /* Talking about the button which toggles the slides */
 .hidden_button {
     display: hidden !important;

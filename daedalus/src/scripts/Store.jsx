@@ -142,7 +142,7 @@ class Store {
         state: this.state
     }
 
-    @action nextViewportState() {
+    @action nextViewportState = () => {
         this.state = this.stateTable[this.state]
     }
 }
