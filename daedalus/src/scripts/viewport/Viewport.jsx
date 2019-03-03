@@ -112,7 +112,7 @@ class Viewport extends Component {
 		
 		//Indices are really important for the coordinate calculation of the disk chooser //*see? reference up
 		this.props.store.loadModel(this.scene, "models/test.ply", 0);
-		this.props.store.loadModel(this.scene, "models/test1.ply", 1);
+		//this.props.store.loadModel(this.scene, "models/test1.ply", 1);
 
 		//Configure Camera
 		this.camera = this.camerasTable[this.props.store.state]().camera;

@@ -104,12 +104,12 @@ export default class PointCloud {
     load = () => {
         //TODO: REFACTOR THIS
 
-        if (Object.keys(this.store.indexStack).length > 3 && this.store.state === "PREVIEW") {
+        if (Object.keys(this.store.indexStack).length > 1 && this.store.state === "PREVIEW") {
             console.warn("YOU ARE IN PREVIEW MODE, no more than one model allowed");
         }
 
         if (this.store.state === "GENERATION" ||
-           (Object.keys(this.store.indexStack).length <= 3 && 
+           (Object.keys(this.store.indexStack).length <= 1 && 
             this.store.state === "PREVIEW")) {
 
             if(this.type === "ply") {

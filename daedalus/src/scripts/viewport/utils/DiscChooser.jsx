@@ -52,6 +52,10 @@ class DiscChooser extends Component {
         });
     }
 
+    rotateDisks(index) {
+        //Rotate to the disks to index
+    }
+
     // Should be used in a loop with all the positions
     generateDisc(index) {
         let group = new THREE.Group();

@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { observer } from 'mobx-react'
-import { Transition, Button, Input } from 'semantic-ui-react';
+import { Transition, Button, Input, Icon } from 'semantic-ui-react';
 
 @observer
 class Options extends Component {
 
     loadModel = () => {
-        this.props.store.loadModel(null, "models/test2.ply", 2);
+        this.props.store.loadModel(null, "models/test2.ply", 1);
     }
 
     removeModel = () => {
@@ -14,8 +14,8 @@ class Options extends Component {
     }
 
     buttons = [
-        { icon: "arrow left", text: "Previous", onClick: this.props.store.previousModel},
-        { icon: "arrow right", text: "Next", onClick: this.props.store.nextModel},
+        { icon: "arrow left", text: "Previous", onClick: this.props.store.nextModel},
+        { icon: "arrow right", text: "Next", onClick: this.props.store.previousModel},
         { icon: "add", text: "Add", onClick: this.loadModel},
         { icon: "close", text: "Remove", onClick: this.removeModel},
     ]
@@ -78,13 +78,19 @@ class Options extends Component {
                             animation='fly up' duration={500}>
 
                     <div className="generation_options menuframe" style={{ display: "flex !important" }}>
+                        
+                        <div className="choosing_arrows_container">
+                            <Icon size="huge" className="menuframe generating_arrows gc_right" invert onClick={this.props.store.nextModel} name="arrow right"/>
+                            <Icon size="huge" className="menuframe generating_arrows gc_left" invert onClick={this.props.store.previousModel} name="arrow left"/>
+                        </div> 
+
                         <div className="generation_options_container">
                             <Input label={{ icon: 'asterisk' }} 
                                 labelPosition='right corner' 
                                 placeholder='Choose a model class' 
                                 className="generate_input"
                             />
-                            <Button color="violet" size="huge" className="generate_button" onClick={this.generate}>
+                            <Button color="violet" size="huge" className="generate_button" onClick={this.loadModel}>
                                 Generate
                             </Button>
                         </div>
