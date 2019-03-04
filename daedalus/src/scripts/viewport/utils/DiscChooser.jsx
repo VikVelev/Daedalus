@@ -1,11 +1,4 @@
 
-//TODO: Try this
-/* 
-    Use this function go generate 10 discs to act as placeholders
-    
-
-*/
-
 import { Component } from 'react'
 import { observer } from 'mobx-react'
 import * as THREE from 'three';
@@ -209,10 +202,10 @@ class DiscChooser extends Component {
             if (this.store.currentlyLoadingBool[i]) {
                 item.rotation.x += 0.05;
                 item.rotation.y += 0.05;
+                //item.rotation.z += 0.01;
 
                 // this.loadingText[i].lookAt(camera.position);
             }
-            //item.rotation.z += 0.01;
         })
         
     }
