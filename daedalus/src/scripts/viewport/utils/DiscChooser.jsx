@@ -9,7 +9,8 @@
 import React, { Component } from 'react'
 import { observer } from 'mobx-react'
 import * as THREE from 'three';
-import { rotateAroundObjectAxis, rotateAroundWorldAxis, getCenterPoint } from './MatrixRotation.jsx'
+import { rotateAroundWorldAxis } from './MatrixRotation.jsx'
+import { Loader } from 'semantic-ui-react';
 
 
 export function calculateCoordinates(index) {
@@ -33,6 +34,8 @@ class DiscChooser extends Component {
     
     disks = [];
     lights = [];
+    loadingFrontend = [];
+    loadingText = [];
     elements = new THREE.Object3D();
     pivot = new THREE.Group();
     rotating = false;
@@ -146,6 +149,39 @@ class DiscChooser extends Component {
         circle.rotation.x += -Math.PI/2;
         this.disks.push(circle);
 
+        /* Loading text TODO */
+        // let fontLoader = new THREE.FontLoader();
+        // let text = new THREE.Object3D();
+
+        // fontLoader.load('https://threejs.org/docs/files/inconsolata.woff', (font) => {
+
+        //     text = new THREE.TextGeometry("Loading", {
+        //         font: font,
+        //         size: 80,
+        //         height: 5,
+        //         curveSegments: 12,
+        //         bevelEnabled: true,
+        //         bevelThickness: 10,
+        //         bevelSize: 8,
+        //         bevelSegments: 5
+        //     })
+
+        //     text.position = circle.position;
+
+
+        // })
+
+        // this.loadingText.push(text);
+
+        /* Loading Icohasedron */
+        let icohasedron = new THREE.IcosahedronGeometry(10, 1);
+        let icoMaterial = new THREE.MeshLambertMaterial({ color: 0x165a8c });
+
+        icohasedron = new THREE.Mesh(icohasedron, icoMaterial);
+        icohasedron.position.set(circle.position.x, circle.position.y + 20, circle.position.z);
+        icohasedron.material.wireframe = true;
+        this.loadingFrontend.push(icohasedron);
+
         /* Light */
         let light = new THREE.PointLight( 0xffe300, 2, 100 );
         light.position.set( circle.position.x, circle.position.y + 80, circle.position.z );
@@ -154,6 +190,8 @@ class DiscChooser extends Component {
         /* Group */
         group.add( light );
         group.add( circle );
+        // group.add( text );
+        group.add( icohasedron )
 
         this.elements.add(group);
         this.showDisks();
@@ -163,8 +201,22 @@ class DiscChooser extends Component {
         return group;
     }
 
-    loading() {
+    loading(camera) {
+        this.store.currentlyLoadingBool.forEach((item, i) => {
+            this.loadingFrontend[i].visible = item;
+        })
 
+        this.loadingFrontend.forEach((item, i) => {
+            
+            if (this.store.currentlyLoadingBool[i]) {
+                item.rotation.x += 0.05;
+                item.rotation.y += 0.05;
+
+                // this.loadingText[i].lookAt(camera.position);
+            }
+            //item.rotation.z += 0.01;
+        })
+        
     }
 }
 

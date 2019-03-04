@@ -319,7 +319,7 @@ class Viewport extends Component {
 			}
 		}
 
-		this.chooser.loading();
+		this.chooser.loading(this.camera);
 
 		this.scene.traverse(( object ) => {
 			if ( object instanceof THREE.LOD ) {
