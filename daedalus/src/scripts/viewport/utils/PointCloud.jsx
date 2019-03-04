@@ -4,7 +4,7 @@ import MTLLoader from './MTLLoader.jsx';
 import { calculateCoordinates } from './DiscChooser'
 import { 
     MeshLambertMaterial,
-    SphereGeometry, 
+    //SphereGeometry, 
     IcosahedronBufferGeometry,
     //CubeGeometry, 
     Group, 
@@ -182,14 +182,14 @@ export default class PointCloud {
 
         let LOD = new THREE.LOD();
 
-        for (let i = 0; i <= 3; i++) {
+        for (let i = 0; i <= 2; i++) {
 
             let level = new THREE.Group();
 
             vertices.forEach(point => {
                 
                 //TODO: Customization of point visualization -> sphere/cube/prism w/e;
-                let geometry = new IcosahedronBufferGeometry(this.scale/80, 3 - i);
+                let geometry = new IcosahedronBufferGeometry(this.scale/80, 2 - i);
                 let material = new MeshLambertMaterial({ color: 0x0055ff });
 
                 let sphere = new Mesh(geometry, material);
@@ -200,7 +200,7 @@ export default class PointCloud {
                 level.add(sphere);
             })
 
-            LOD.addLevel(level, i*90);
+            LOD.addLevel(level, i * 135);
         }
 
         this.model = this.sphere_geometry = LOD;

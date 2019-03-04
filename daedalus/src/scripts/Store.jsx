@@ -14,6 +14,7 @@ class Store {
     @observable currentlyLoading = [] //Array of PointClouds which are loading   
     @observable currentlyChosenModel = 0; //index //TODO THink of a way for the program to start without any models (eg. index === undefined or null)
     @observable sceneRef = {};
+    @observable chosenModelLink = ""
     @observable state = "PREVIEW"
     @observable stateTable = {
         "GENERATION" : "PREVIEW",
@@ -28,7 +29,6 @@ class Store {
     @action stateLoad(pointcloud) {
         this.currentlyLoading.push(pointcloud);
         this.currentlyLoadingBool[this.indexStack[pointcloud.filename]] = true;
-        console.log(this.currentlyLoadingBool);
     }
 
     /* These methods are only modifying the state, and not actually loading */
@@ -40,7 +40,6 @@ class Store {
         }
 
         this.currentlyLoadingBool[this.indexStack[pointcloud.filename]] = false;
-        console.log(this.currentlyLoadingBool);
     }
 
     @computed get isPrevious() {
@@ -57,6 +56,8 @@ class Store {
         if (this.loadedModels[this.currentlyChosenModel + 1] !== undefined){
             this.currentlyChosenModel++;
             this.viewport.rotatePrevious = true;
+            this.chosenModelLink = this.loadedPointClouds[this.currentlyChosenModel].filename
+
         } else {
             console.warn("NO SUCH MODEL WITH INDEX", this.currentlyChosenModel + 1);
         }
@@ -71,7 +72,9 @@ class Store {
 
         if (this.loadedModels[this.currentlyChosenModel - 1] !== undefined){
             this.currentlyChosenModel--;
-            this.viewport.rotateNext = true;        
+            this.viewport.rotateNext = true;
+            this.chosenModelLink = this.loadedPointClouds[this.currentlyChosenModel].filename
+
         } else {
             console.warn("NO SUCH MODEL WITH INDEX", (this.currentlyChosenModel - 1 < 0) ? 11 + (this.currentlyChosenModel) : (this.currentlyChosenModel - 1));
         }
@@ -79,7 +82,7 @@ class Store {
         if(this.currentlyChosenModel < 0) {
             this.currentlyChosenModel = 11;
         }
-    
+        
     }
 
     @action addModel(pc) {
@@ -98,6 +101,9 @@ class Store {
     }
 
     @action addLoaded(object, pc) {
+        if(this.loadedModels.length === 0 ) {
+            this.__chooseModelINIT(0, pc);
+        }
         this.loadedModels.push(object);
         this.stateLoaded(pc);
         this.loadedPointClouds.push(pc);
@@ -110,6 +116,12 @@ class Store {
         }
     }
 
+    // this should be used only as initial settings
+    @action __chooseModelINIT(index, pc) {
+        this.currentlyChosenModel = index;
+        this.chosenModelLink = pc.filename
+    }
+
     @action loadModel = (scene, path, index) => {
         if(scene !== null) {
             this.sceneRef = scene;
@@ -117,7 +129,7 @@ class Store {
         
         let pc = new PointCloud(this, path, this.sceneRef);
 
-		this.addModel(pc);
+        this.addModel(pc);
 		this.stackPush(path, index);
 		
 		pc.load();
@@ -153,6 +165,8 @@ class Store {
         active: {},
         togglePreviewOptions: true,
         toggleGenerationOptions: true,
+        rightArrow: false,
+        leftArrow: false,
         type: "",
     }
 
@@ -172,6 +186,11 @@ class Store {
 
     @action nextViewportState = () => {
         this.state = this.stateTable[this.state]
+        this.loadedModels.forEach((el) => {
+            if (el !== this.chosenModel) {
+                el.visible = !el.visible;
+            }
+        })
     }
 }
 

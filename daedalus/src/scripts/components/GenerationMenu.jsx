@@ -11,16 +11,15 @@ class GenerationMenu extends Component {
         rightArrow: false
     }
 
-    componentDidMount() {
-      
-        autorun(() => {
+    constructor(props) {
+        super(props);
 
-            this.setState({ leftArrow: (this.props.store.loadedModels[this.props.store.currentlyChosenModel + 1] !== undefined) });
-            this.setState({ rightArrow: (this.props.store.loadedModels[this.props.store.currentlyChosenModel - 1] !== undefined) });
+        autorun(() => {
+            this.props.store.options.leftArrow = (this.props.store.loadedModels[this.props.store.currentlyChosenModel + 1] !== undefined)
+            this.props.store.options.rightArrow = (this.props.store.loadedModels[this.props.store.currentlyChosenModel - 1] !== undefined) 
         })
     }
     
-
     loadModel = () => {
         this.props.store.loadModel(null, "models/test2.ply", 1);
     }
@@ -33,7 +32,7 @@ class GenerationMenu extends Component {
                     <div className="generation_options menuframe" style={{ display: "flex !important" }}>
                         
                         <div className="choosing_arrows_container">
-                            { this.state.rightArrow ? 
+                            { this.props.store.options.rightArrow ? 
                             
                                 <Icon size="huge" 
                                     onClick={this.props.store.nextModel} 
@@ -42,7 +41,7 @@ class GenerationMenu extends Component {
                                 null 
                             }
 
-                            { this.state.leftArrow ? 
+                            { this.props.store.options.leftArrow ? 
                                 <Icon size="huge" 
                                     onClick={this.props.store.previousModel} 
                                     className="menuframe generating_arrows gc_left"

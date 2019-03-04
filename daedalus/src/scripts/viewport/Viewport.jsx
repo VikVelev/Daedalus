@@ -2,12 +2,9 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { autorun } from 'mobx';
 
-import PointCloud from './utils/PointCloud.jsx';
 import DiskChooser from './utils/DiscChooser.jsx';
 
 import * as THREE from 'three'
-import { DoubleSide } from 'three';
-
 import '../../styles/Viewport.css'
 
 import OrbitControls from 'threejs-orbit-controls';
@@ -78,6 +75,7 @@ class Viewport extends Component {
 		autorun(() => {
 			this.camera = this.camerasTable[this.props.store.state]().camera;
 			this.controls = this.camerasTable[this.props.store.state]().controls;
+			//this.toggleUnnecessaryThings();
 		});
 
 		//Everytime the chosen model changes, change the selected shit
@@ -101,7 +99,7 @@ class Viewport extends Component {
 
 					this.chooser.disks[chosen].material.color.setStyle("#28a4ff");
 
-					this.props.store.chosenModelPointCloud.opacity(1);
+					this.props.store.loadedPointClouds[i].opacity(1);
 
 					this.chooser.lights[chosen].intensity = 3;
 					this.chooser.lights[chosen].distance = 100;
@@ -117,6 +115,7 @@ class Viewport extends Component {
 		
 		//Indices are really important for the coordinate calculation of the disk chooser //*see? reference up
 		this.props.store.loadModel(this.scene, "models/test.ply", 0);
+
 		//this.props.store.loadModel(this.scene, "models/test1.ply", 1);
 
 		//Configure Camera
@@ -126,6 +125,14 @@ class Viewport extends Component {
 
 		this.onWindowResize();
 		this.start();
+	}
+
+	toggleUnnecessaryThings() {
+		this.props.store.loadedModels.forEach((el) => {
+			if (el !== this.props.store.chosenModel) {
+				el.visible = !el.visible;
+			}
+		})
 	}
 
 	previewCamera() {

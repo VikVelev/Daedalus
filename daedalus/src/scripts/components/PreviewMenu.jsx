@@ -6,21 +6,22 @@ import { Transition, Button } from 'semantic-ui-react';
 class PreviewMenu extends Component {
 
     buttons = [
-        { icon: "box", text: "Generate", onClick: this.props.store.nextViewportState},
+        { icon: "box", label: "Generate", onClick: this.props.store.nextViewportState},
     ]
 
+    
     button = (button, key) => {
+
         return (
             <div className="options_button" key={key}>
                 <Button 
+                    as="a"
                     primary
                     color="blue" 
                     size="massive"
-                    icon={button.icon} 
-                    label={button.text}
                     labelPosition="left"
                     className="options_button_child"
-                    onClick={button.onClick}
+                    {...button}
                 />
             </div>
         );
@@ -34,11 +35,26 @@ class PreviewMenu extends Component {
                 
                 <div className="menuframe preview_options" style={{ display: "flex !important" }}>
                     <div className="optionsContainer">
-                        {
+                        {                                
                             this.buttons.map((element, key) => {
                                 return this.button(element, key);
                             })
+
                         }
+
+                        <div className="options_button">
+                            <Button 
+                                as="a"
+                                primary
+                                color="blue" 
+                                size="massive"
+                                labelPosition="left"
+                                className="options_button_child"
+                                icon="save"
+                                label="Export"
+                                href={"http://localhost:8888/" + this.props.store.chosenModelLink}
+                            />
+                        </div>
                     </div>
                 </div>
 

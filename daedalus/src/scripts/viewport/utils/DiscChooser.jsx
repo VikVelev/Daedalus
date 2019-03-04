@@ -6,11 +6,11 @@
 
 */
 
-import React, { Component } from 'react'
+import { Component } from 'react'
 import { observer } from 'mobx-react'
 import * as THREE from 'three';
 import { rotateAroundWorldAxis } from './MatrixRotation.jsx'
-import { Loader } from 'semantic-ui-react';
+//import { Loader } from 'semantic-ui-react';
 
 
 export function calculateCoordinates(index) {
@@ -50,9 +50,7 @@ class DiscChooser extends Component {
 
     hideDisks() {
         for (let i = 0; i < this.disks.length; i++) {
-            if(this.store.currentlyChosenModel !== i) {
-                this.disks[i].visible = false;
-            }
+            this.disks[i].visible = false;
         }
     }
 

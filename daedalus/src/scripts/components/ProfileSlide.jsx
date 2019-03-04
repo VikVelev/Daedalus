@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { observer } from 'mobx-react'
-import { Segment, Transition, Button, Card, Icon, Image, Header } from 'semantic-ui-react';
+import { Segment, Transition, Button, Card, Image} from 'semantic-ui-react';
 
 @observer
 class ProfileSlide extends Component {
