@@ -115,6 +115,7 @@ export default class PointCloud {
             if(this.type === "ply") {
                 
                 this.loader.load(this.filename, this.callbackOnLoad);
+                this.store.stateLoad(this);
                 
             } else if (this.type === "obj") {
                 
@@ -124,9 +125,10 @@ export default class PointCloud {
                     this.callbackOnError,
                     null,
                     false)        
+                this.store.stateLoad(this);
+                
             }
         }
-
 
     }
 

@@ -144,6 +144,7 @@ class Viewport extends Component {
 			controls.dampingFactor = 0.3; // friction
 			controls.rotateSpeed = 0.2; // mouse sensitivity
 			controls.maxDistance = 500;
+			controls.enablePan = false;
 
 			let object = { camera: camera, controls: controls } ;
 			this.cameras["PREVIEW"] = object;
@@ -160,26 +161,29 @@ class Viewport extends Component {
 
 		event.preventDefault();
 
+		let gc = this.generatingControls;
+
 		this.mount.addEventListener( 'mousemove', this.onDocumentMouseMove, false );
 		this.mount.addEventListener( 'mouseup', this.onDocumentMouseUp, false );
 		this.mount.addEventListener( 'mouseout', this.onDocumentMouseOut, false );
 
-		this.generatingControls.onMouseDown.mouseX = event.clientX - this.generatingControls.windowHalfX;
-		this.generatingControls.onMouseDown.targetRotationX = this.generatingControls.targetRotation.x;
+		gc.onMouseDown.mouseX = event.clientX - gc.windowHalfX;
+		gc.onMouseDown.targetRotationX = gc.targetRotation.x;
 
-		this.generatingControls.onMouseDown.mouseY = event.clientY - this.generatingControls.windowHalfY;
-		this.generatingControls.onMouseDown.targetRotationY = this.generatingControls.targetRotation.y;
+		gc.onMouseDown.mouseY = event.clientY - gc.windowHalfY;
+		gc.onMouseDown.targetRotationY = gc.targetRotation.y;
 	}
 
 	onDocumentMouseMove = ( event ) => {
+		let gc = this.generatingControls;
 
-		this.generatingControls.mouse.x = event.clientX - this.generatingControls.windowHalfX;
+		gc.mouse.x = event.clientX - gc.windowHalfX;
 
-		this.generatingControls.targetRotation.x = ( this.generatingControls.mouse.x - this.generatingControls.onMouseDown.mouseX ) * 0.00025;
+		gc.targetRotation.x = ( gc.mouse.x - gc.onMouseDown.mouseX ) * 0.00025;
 
-		this.generatingControls.mouse.y = event.clientY - this.generatingControls.windowHalfY;
+		gc.mouse.y = event.clientY - gc.windowHalfY;
 
-		this.generatingControls.targetRotation.y = ( this.generatingControls.mouse.y - this.generatingControls.onMouseDown.mouseY ) * 0.00025;
+		gc.targetRotation.y = ( gc.mouse.y - gc.onMouseDown.mouseY ) * 0.00025;
 	}
 
 	onDocumentMouseUp = ( event ) => {
@@ -297,14 +301,25 @@ class Viewport extends Component {
 		cancelAnimationFrame(this.frameId);
 	}
 
+	// MAIN LOOP
 	animate = () => {
 		if(this.props.store.loadedModels.length > 0) {
-			let model = this.props.store.chosenModelPointCloud;
 
-			if(model !== undefined) {
-				model.rotateAroundWorldAxis(new THREE.Vector3(0, 1, 0), 0.001);
+			let modelPC = this.props.store.chosenModelPointCloud;
+			let modelMesh = this.props.store.chosenModel
+
+			this.controls.target.set(
+				modelMesh.position.x,
+				modelMesh.position.y,
+				modelMesh.position.z,
+			)
+
+			if(modelPC !== undefined) {
+				modelPC.rotateAroundWorldAxis(new THREE.Vector3(0, 1, 0), 0.001);
 			}
 		}
+
+		this.chooser.loading();
 
 		this.scene.traverse(( object ) => {
 			if ( object instanceof THREE.LOD ) {
@@ -313,12 +328,14 @@ class Viewport extends Component {
 		});
 
 		if(this.props.store.state === "GENERATION") {
-			
-			this.props.store.chosenModelPointCloud.rotateAroundWorldAxis( new THREE.Vector3(0, 1, 0), this.generatingControls.targetRotation.x);
-			//this.rotateAroundWorldAxis(this.props.store.chosenModel, new THREE.Vector3(1, 0, 0), this.generatingControls.targetRotation.y);
 
-			this.generatingControls.targetRotation.y = this.generatingControls.targetRotation.y * (1 - this.generatingControls.slowingFactor);
-			this.generatingControls.targetRotation.x = this.generatingControls.targetRotation.x * (1 - this.generatingControls.slowingFactor);
+			let gc = this.generatingControls;
+			
+			this.props.store.chosenModelPointCloud.rotateAroundWorldAxis( new THREE.Vector3(0, 1, 0), gc.targetRotation.x);
+			//this.rotateAroundWorldAxis(this.props.store.chosenModel, new THREE.Vector3(1, 0, 0), gc.targetRotation.y);
+
+			gc.targetRotation.y = gc.targetRotation.y * (1 - gc.slowingFactor);
+			gc.targetRotation.x = gc.targetRotation.x * (1 - gc.slowingFactor);
 			
 			if(this.props.store.viewport.rotateNext) {
 				this.chooser.rotateDiskNext();

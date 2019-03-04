@@ -18,11 +18,6 @@ class TopHeader extends Component {
         this.props.store.settings.open = !this.props.store.settings.open;
     }
 
-    toggleModes = () => {
-        this.props.store.nextViewportState();
-        //console.log(this.props.store)
-    }
-
     render() {
         return (
             <Transition visible={this.props.visible} animation='fly down' duration={500}>
@@ -36,7 +31,7 @@ class TopHeader extends Component {
                                   profileOpen={this.props.store.profile.open} 
                                   toggle={this.toggleSMProfile}/>
 
-                    <Segment color="violet" onClick={this.toggleModes}
+                    <Segment color="violet"
                              className={"menuframe top " + this.props.type.toLowerCase()} >
                         <Header>
                             {this.props.type}

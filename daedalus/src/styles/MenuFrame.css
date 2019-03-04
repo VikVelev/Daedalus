@@ -186,3 +186,12 @@
     display: hidden !important;
     opacity: 0 !important;
 }
+
+.lower_generation_options {
+    display: flex !important;
+    flex-direction: row;
+}
+
+.back_to_preview {
+    left: 0 !important;
+}

@@ -51,15 +51,23 @@ class GenerationMenu extends Component {
                             }
                         </div> 
 
-                        <div className="generation_options_container">
-                            <Input label={{ icon: 'asterisk' }} 
-                                labelPosition='right corner' 
-                                placeholder='Choose a model class' 
-                                className="generate_input"
-                            />
-                            <Button color="violet" size="huge" className="generate_button" onClick={this.loadModel}>
-                                Generate
+                        <div className="lower_generation_options">
+
+                            <Button active={this.props.store.chosenModelPointCloud !== undefined} color="violet" size="big" className="back_to_preview" onClick={this.props.store.nextViewportState}>
+                                Preview
                             </Button>
+
+                            <div className="generation_options_container">
+                                <Input label={{ icon: 'asterisk' }} 
+                                    labelPosition='right corner' 
+                                    placeholder='Choose a model class' 
+                                    className="generate_input"
+                                    />
+                                <Button color="violet" size="huge" className="generate_button" onClick={this.loadModel}>
+                                    Generate
+                                </Button>
+                            </div>
+
                         </div>
                     </div>
 

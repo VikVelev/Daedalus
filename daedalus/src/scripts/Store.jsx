@@ -1,18 +1,46 @@
-import { autorun, observable, action, computed } from "mobx";
+import { observable, action, computed } from "mobx";
 import PointCloud from './viewport/utils/PointCloud.jsx'
 
 class Store {
 
     @observable loadedPointClouds = []  //All loaded models Point Cloud class
     @observable loadedModels = [];  //All loaded models THREE JS Geometry
-    @observable availableModels = []; //All models that can be loaded
-    @observable indexStack = {};    //Stack with indices directly coresponding to the arrays above, indicating and controlling loadability of models
-    @observable currentlyChosenModel = 0; //index
+    @observable availableModels = []; //All models that can be loaded (basically a cache)
+    //Stack with indices directly coresponding to the arrays above, indicating and controlling loadability of models
+    @observable indexStack = {}; // This also allows me to refer to a certain index just by it's point cloud    
+    @observable currentlyLoadingBool = [
+        false, false, false, false, false, false, false, false, false, false, false, false
+    ] //Array of booleans showing which is loading
+    @observable currentlyLoading = [] //Array of PointClouds which are loading   
+    @observable currentlyChosenModel = 0; //index //TODO THink of a way for the program to start without any models (eg. index === undefined or null)
     @observable sceneRef = {};
     @observable state = "PREVIEW"
     @observable stateTable = {
         "GENERATION" : "PREVIEW",
         "PREVIEW" : "GENERATION"
+    }
+
+    @action doesExist(index) {
+        return (this.currentlyLoading[index] || (this.loadedModels[index] !== undefined))
+    }
+
+    /* These methods are only modifying the state, and not actually loading */
+    @action stateLoad(pointcloud) {
+        this.currentlyLoading.push(pointcloud);
+        this.currentlyLoadingBool[this.indexStack[pointcloud.filename]] = true;
+        console.log(this.currentlyLoadingBool);
+    }
+
+    /* These methods are only modifying the state, and not actually loading */
+    @action stateLoaded(pointcloud) {
+        for (let i = 0; i < this.currentlyLoading.length; i++) {
+            if(pointcloud === this.currentlyLoading[i]) {
+                this.currentlyLoading.splice(i, 1);
+            }
+        }
+
+        this.currentlyLoadingBool[this.indexStack[pointcloud.filename]] = false;
+        console.log(this.currentlyLoadingBool);
     }
 
     @computed get isPrevious() {
@@ -71,7 +99,7 @@ class Store {
 
     @action addLoaded(object, pc) {
         this.loadedModels.push(object);
-        
+        this.stateLoaded(pc);
         this.loadedPointClouds.push(pc);
     }
 

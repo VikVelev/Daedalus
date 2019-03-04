@@ -133,6 +133,7 @@ class DiscChooser extends Component {
             material = new THREE.MeshLambertMaterial({ color: 0x165a8c, transparent: true, opacity: 0.7 });
         }
 
+        /* Disk */
         material.side = THREE.DoubleSide;
         let circle = new THREE.Mesh( geometry, material)
 
@@ -144,18 +145,26 @@ class DiscChooser extends Component {
 
         circle.rotation.x += -Math.PI/2;
         this.disks.push(circle);
+
         /* Light */
         let light = new THREE.PointLight( 0xffe300, 2, 100 );
         light.position.set( circle.position.x, circle.position.y + 80, circle.position.z );
         this.lights.push(light);
         
+        /* Group */
         group.add( light );
         group.add( circle );
-        this.elements.add(group);
 
+        this.elements.add(group);
         this.showDisks();
         
+        /* This can either return one group of objects to add to the scene, 
+           or use the this.elements to load all of them at once */
         return group;
+    }
+
+    loading() {
+
     }
 }
 
