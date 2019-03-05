@@ -8,6 +8,7 @@ class GenerateSerializer(serializers.ModelSerializer):
         fields = (
             'object_class',
             'date_generated',
-            'content',
+            'generated',
+            'interpolations',
             'num_of_vertices'
         )

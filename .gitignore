@@ -20,3 +20,14 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+/daedalusAPI/core/generator/data*
+/daedalusAPI/core/generator/generated*
+/daedalusAPI/core/generator/models_checkpoints*
+
+/daedalusAPI/core/generator/src/main/data*
+/daedalusAPI/core/generator/src/main/generated*
+/daedalusAPI/core/generator/src/main/models_checkpoints*
+/daedalusAPI/core/generator/src/main/renders*
+
+/daedalusAPI/core/migrations*

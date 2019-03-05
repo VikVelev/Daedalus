@@ -52,7 +52,7 @@ class PreviewMenu extends Component {
                                 className="options_button_child"
                                 icon="save"
                                 label="Export"
-                                href={"http://localhost:8888/" + this.props.store.chosenModelLink}
+                                href={"http://fortress88.servebeer.com:8888/" + this.props.store.chosenModelLink}
                             />
                         </div>
                     </div>
