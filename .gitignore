@@ -29,6 +29,7 @@ yarn-error.log*
 /daedalusAPI/core/generator/src/main/generated*
 /daedalusAPI/core/generator/src/main/models_checkpoints*
 /daedalusAPI/core/generator/src/main/renders*
+/daedalusAPI/static/
 
 /daedalusAPI/core/migrations*
 /.vscode*
