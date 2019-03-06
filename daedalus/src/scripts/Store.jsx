@@ -58,7 +58,6 @@ class Store {
             this.currentlyChosenModel++;
             this.viewport.rotatePrevious = true;
             this.chosenModelLink = this.loadedPointClouds[this.currentlyChosenModel].filename
-            console.log(this.loadedPointClouds[this.currentlyChosenModel])
 
         } else {
             console.warn("NO SUCH MODEL WITH INDEX", this.currentlyChosenModel + 1);
@@ -76,7 +75,6 @@ class Store {
             this.currentlyChosenModel--;
             this.viewport.rotateNext = true;
             this.chosenModelLink = this.loadedPointClouds[this.currentlyChosenModel].filename
-            console.log(this.currentlyChosenModel)
 
         } else {
             console.warn("NO SUCH MODEL WITH INDEX", (this.currentlyChosenModel - 1 < 0) ? 11 + (this.currentlyChosenModel) : (this.currentlyChosenModel - 1));
@@ -142,8 +140,7 @@ class Store {
         xhttp.onreadystatechange = (r) => {
             if (xhttp.readyState === 4 && xhttp.status === 200) {
                 let response = JSON.parse(xhttp.responseText)
-                console.log(response)
-                this.loadModel("http://localhost:8000/static/" + response.generated, this.loadedModels.length);
+                this.loadModel("http://fortress88.servebeer.com:8000/static/" + response.generated, this.loadedModels.length);
             }
         };
         xhttp.open("POST", "http://fortress88.servebeer.com:8000/api/generate/?object_class=" + object_class, true)
@@ -158,7 +155,6 @@ class Store {
 		this.stackPush(path, index);
 		
         pc.load();
-        console.log(this)
     }
 
     @action removeModel = (scene, path, index) => {
@@ -177,7 +173,6 @@ class Store {
     @computed get chosenModelPointCloud() {
         for (let i = 0; i < this.availableModels.length; i++) {
             if (this.availableModels[i].filename === this.reverseIndexStack[this.currentlyChosenModel]) {
-                console.log(this.availableModels[i].filename, this.reverseIndexStack[this.currentlyChosenModel]);
                 return this.availableModels[i]
             }
             

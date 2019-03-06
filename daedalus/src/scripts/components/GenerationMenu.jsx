@@ -35,7 +35,6 @@ class GenerationMenu extends Component {
     clearScene = () => {
         // TODO: Write a better clear scene method
         electron.getCurrentWindow().reload();
-        console.log("Clearing...");
     }
 
     render() {

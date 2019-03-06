@@ -165,7 +165,7 @@ class Generator:
         for i, reconstruction in enumerate(reconstructions):
             obj_wrapper(reconstruction, self.object_class, i)
             
-        print("Reconstructed")
+        #print("Reconstructed")
 
     def interpolate(self, _from, _to, steps=10, write_file=True):
         

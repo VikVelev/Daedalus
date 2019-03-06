@@ -139,7 +139,6 @@ class Viewport extends Component {
 
 	previewCamera() {
 		this.chooser.hideDisks();
-
 		if (this.cameras["PREVIEW"] === null) {
 			let camera 
 
@@ -162,6 +161,7 @@ class Viewport extends Component {
 		}
 
 		this.cameras["PREVIEW"].controls.enabled = true;
+		this.onWindowResize();
 		return this.cameras["PREVIEW"];
 
 	}	

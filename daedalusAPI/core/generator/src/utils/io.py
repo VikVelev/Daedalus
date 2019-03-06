@@ -202,8 +202,8 @@ def load_point_clouds_from_filenames(file_names, n_threads, loader, verbose=Fals
     if len(np.unique(model_names)) != len(pclouds):
         warnings.warn('Point clouds with the same model name were loaded.')
 
-    if verbose:
-        print('{0} pclouds were loaded. They belong in {1} shape-classes.'.format(len(pclouds), len(np.unique(class_ids))))
+    # if verbose:
+    #     print('{0} pclouds were loaded. They belong in {1} shape-classes.'.format(len(pclouds), len(np.unique(class_ids))))
 
     return pclouds, model_names, class_ids
 

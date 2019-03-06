@@ -28,9 +28,9 @@ class GAN(NeuralNetwork):
 
         if self.epoch.eval(session=self.sess) != epoch:
             warnings.warn('Loaded model\'s epoch doesn\'t match the requested one.')
-        else:
-            if verbose:
-                print('Model restored in epoch {0}.'.format(epoch))
+        # else:
+        #     if verbose:
+        #         print('Model restored in epoch {0}.'.format(epoch))
 
     def optimizer(self, learning_rate, beta, loss, var_list):
         initial_learning_rate = learning_rate

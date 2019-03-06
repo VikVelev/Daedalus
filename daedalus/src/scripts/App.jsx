@@ -12,21 +12,12 @@ import '../styles/App.css';
 class App extends Component {
 
 	routes = {
-		Main: () => (<Main store={this.props.store}></Main>),
-		NotFound: () => (<NotFound></NotFound>)
+		Main: <Main store={this.props.store}></Main>,
+		NotFound: <NotFound></NotFound>
 	}
 
 	render() {
-		return (
-		<Router className="App">
-			<Switch>
-				<Route exact path="/" component={this.routes.Main} />
-				{/* Anything that is not said above is not existent thus -> Not Found error 
-				This isn't supposed to happen in desktop apps */}
-				<Route component={this.routes.NotFound} />
-			</Switch>
-		</Router>
-		);
+		return this.routes.Main;
 	}
 }
 

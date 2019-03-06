@@ -5,7 +5,7 @@ const BrowserWindow = electron.BrowserWindow;
 const path = require('path');
 const url = require('url');
 
-let debug = true;
+let debug = false;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -16,9 +16,8 @@ function createWindow() {
     mainWindow = new BrowserWindow({width: 800, height: 600, autoHideMenuBar: !debug, webPreferences: {webSecurity: false}});
 
     // and load the index.html of the app.
-    mainWindow.loadURL('http://localhost:8888');
+    mainWindow.loadURL(`file://${path.join(__dirname, '../build/index.html')}`);
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {
