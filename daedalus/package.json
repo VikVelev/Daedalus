@@ -69,7 +69,7 @@
     "compression": "normal",
     "extends" : null,
     "win": {
-      "target": "nsis",
+      "target": ["nsis", "zip"],
       "legalTrademarks": "GPL v3 License. Made by Viktor Velev. Contacts: viktorvelev8@gmail.com"
     }
   },

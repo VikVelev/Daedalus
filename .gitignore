@@ -31,6 +31,8 @@ yarn-error.log*
 /daedalusAPI/core/generator/src/main/renders*
 /daedalusAPI/static/
 
+/daedalus/dist
 /daedalusAPI/core/migrations*
+/daedalus/dist
 /.vscode*
 /.sonarlint
