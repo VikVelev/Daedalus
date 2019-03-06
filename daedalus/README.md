@@ -1,7 +1,7 @@
 # Daedalus
 ## This is an interesting ambigious crossover between electron and react. I am sorry.
 
-These scripts are cool only if you plan on running it on web. In the future I will write how to get it working correctly everywhere.
+These scripts are cool only if you plan on running it on web. In the future I will write how to get it working correctly everywhere. package.json main should be public/electron.js while in dev
 
 ### `npm start`
 
