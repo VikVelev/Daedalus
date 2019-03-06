@@ -114,7 +114,8 @@ class Viewport extends Component {
 		//Initilize base event listeners and start animation loop
 		
 		//Indices are really important for the coordinate calculation of the disk chooser //*see? reference up
-		this.props.store.loadModel(this.scene, "models/test.ply", 0);
+		
+		//this.props.store.loadModel(this.scene, "models/test.ply", 0);
 
 		//this.props.store.loadModel(this.scene, "models/test1.ply", 1);
 
@@ -122,7 +123,8 @@ class Viewport extends Component {
 		this.camera = this.camerasTable[this.props.store.state]().camera;
 		this.controls = this.camerasTable[this.props.store.state]().controls;
 		//TODO: Incorporate TransformControls in the future
-
+		
+		this.props.store.sceneRef = this.scene;
 		this.onWindowResize();
 		this.start();
 	}
@@ -144,7 +146,7 @@ class Viewport extends Component {
 			camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 4000 );
 
 			camera.position.x = 300
-			camera.position.y = 10
+			camera.position.y = 6
 			camera.position.z = 2
 	
 			let controls = new OrbitControls( camera );
@@ -214,8 +216,8 @@ class Viewport extends Component {
 		if (this.cameras["GENERATION"] === null) {
 
 			let camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 4000 );
-			camera.position.x = 300
-			camera.position.y = 10
+			camera.position.x = 320
+			camera.position.y = 6
 			camera.position.z = 2
 			
 			let controls;
@@ -338,7 +340,9 @@ class Viewport extends Component {
 
 			let gc = this.generatingControls;
 			
-			this.props.store.chosenModelPointCloud.rotateAroundWorldAxis( new THREE.Vector3(0, 1, 0), gc.targetRotation.x);
+			if(this.props.store.chosenModelPointCloud !== null ){
+				this.props.store.chosenModelPointCloud.rotateAroundObjectAxis( new THREE.Vector3(0, 0, 1), gc.targetRotation.x);
+			}
 			//this.rotateAroundWorldAxis(this.props.store.chosenModel, new THREE.Vector3(1, 0, 0), gc.targetRotation.y);
 
 			gc.targetRotation.y = gc.targetRotation.y * (1 - gc.slowingFactor);

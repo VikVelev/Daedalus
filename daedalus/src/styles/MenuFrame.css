@@ -194,4 +194,9 @@
 
 .back_to_preview {
     left: 0 !important;
+    margin-right: 6px !important;
+}
+
+.clear_scene {
+    margin-left: 5px !important;
 }

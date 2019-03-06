@@ -8,11 +8,13 @@ class Store {
     @observable availableModels = []; //All models that can be loaded (basically a cache)
     //Stack with indices directly coresponding to the arrays above, indicating and controlling loadability of models
     @observable indexStack = {}; // This also allows me to refer to a certain index just by it's point cloud    
+    @observable reverseIndexStack = {};
     @observable currentlyLoadingBool = [
         false, false, false, false, false, false, false, false, false, false, false, false
     ] //Array of booleans showing which is loading
     @observable currentlyLoading = [] //Array of PointClouds which are loading   
     @observable currentlyChosenModel = 0; //index //TODO THink of a way for the program to start without any models (eg. index === undefined or null)
+    @observable justStarted = true;
     @observable sceneRef = {};
     @observable chosenModelLink = ""
     @observable state = "PREVIEW"
@@ -52,11 +54,11 @@ class Store {
 
     @action previousModel = () => {
 
-        
         if (this.loadedModels[this.currentlyChosenModel + 1] !== undefined){
             this.currentlyChosenModel++;
             this.viewport.rotatePrevious = true;
             this.chosenModelLink = this.loadedPointClouds[this.currentlyChosenModel].filename
+            console.log(this.loadedPointClouds[this.currentlyChosenModel])
 
         } else {
             console.warn("NO SUCH MODEL WITH INDEX", this.currentlyChosenModel + 1);
@@ -69,11 +71,12 @@ class Store {
     }
 
     @action nextModel = () => {
-
+        
         if (this.loadedModels[this.currentlyChosenModel - 1] !== undefined){
             this.currentlyChosenModel--;
             this.viewport.rotateNext = true;
             this.chosenModelLink = this.loadedPointClouds[this.currentlyChosenModel].filename
+            console.log(this.currentlyChosenModel)
 
         } else {
             console.warn("NO SUCH MODEL WITH INDEX", (this.currentlyChosenModel - 1 < 0) ? 11 + (this.currentlyChosenModel) : (this.currentlyChosenModel - 1));
@@ -114,6 +117,11 @@ class Store {
             ...this.indexStack,
             [key] : index,
         }
+
+        this.reverseIndexStack = {
+            ...this.reverseIndexStack,
+            [index] : key,
+        }
     }
 
     // this should be used only as initial settings
@@ -122,17 +130,35 @@ class Store {
         this.chosenModelLink = pc.filename
     }
 
-    @action loadModel = (scene, path, index) => {
-        if(scene !== null) {
-            this.sceneRef = scene;
+    @action sendGenerateRequest(object_class) {
+        if (object_class === undefined) {
+            object_class = "chair"
         }
         
+        let index = this.loadedModels.length
+        this.currentlyLoadingBool[index] = true;
+
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = (r) => {
+            if (xhttp.readyState === 4 && xhttp.status === 200) {
+                let response = JSON.parse(xhttp.responseText)
+                console.log(response)
+                this.loadModel("http://localhost:8000/static/" + response.generated, this.loadedModels.length);
+            }
+        };
+        xhttp.open("POST", "http://fortress88.servebeer.com:8000/api/generate/?object_class=" + object_class, true)
+        xhttp.send()
+    }
+
+    @action loadModel = (path, index) => {
+
         let pc = new PointCloud(this, path, this.sceneRef);
 
         this.addModel(pc);
 		this.stackPush(path, index);
 		
-		pc.load();
+        pc.load();
+        console.log(this)
     }
 
     @action removeModel = (scene, path, index) => {
@@ -149,7 +175,14 @@ class Store {
     }
 
     @computed get chosenModelPointCloud() {
-        return this.loadedPointClouds[this.currentlyChosenModel];
+        for (let i = 0; i < this.availableModels.length; i++) {
+            if (this.availableModels[i].filename === this.reverseIndexStack[this.currentlyChosenModel]) {
+                console.log(this.availableModels[i].filename, this.reverseIndexStack[this.currentlyChosenModel]);
+                return this.availableModels[i]
+            }
+            
+        }
+        return null
     }
 
     @observable loading = {

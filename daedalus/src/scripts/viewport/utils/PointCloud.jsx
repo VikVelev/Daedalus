@@ -98,6 +98,7 @@ export default class PointCloud {
         this.scene.add(object);
         this.scene_objects.push(object);
         this.store.addLoaded(object, this);
+        this.store.__chooseModelINIT(0, this);
         //Calculate object coordinates based on index
     }
 

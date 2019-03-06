@@ -2,7 +2,7 @@
 import { Component } from 'react'
 import { observer } from 'mobx-react'
 import * as THREE from 'three';
-import { rotateAroundWorldAxis } from './MatrixRotation.jsx'
+import { rotateAroundWorldAxis, rotateAroundObjectAxis } from './MatrixRotation.jsx'
 //import { Loader } from 'semantic-ui-react';
 
 
@@ -32,7 +32,7 @@ class DiscChooser extends Component {
     elements = new THREE.Object3D();
     pivot = new THREE.Group();
     rotating = false;
-    steps = 25;
+    steps = 15;
     target = { rad: 0, step: 0, rot: 0 };
 
     constructor(props){
@@ -57,10 +57,10 @@ class DiscChooser extends Component {
         for (let i = 0; i < this.store.loadedModels.length; i++) {
 
             let position = this.disks[i].getWorldPosition(new THREE.Vector3());
-
+            
             this.store.loadedModels[i].position.set(
                 position.x,
-                position.y + 20,
+                this.store.loadedModels[i].position.y,
                 position.z,
             )
         }
@@ -135,7 +135,7 @@ class DiscChooser extends Component {
 
         circle.position.x = coords.x * 100;
         circle.position.z = coords.y * 100;
-        circle.position.y -= 20;
+        circle.position.y -= 45;
 
         circle.rotation.x += -Math.PI/2;
         this.disks.push(circle);
@@ -169,7 +169,7 @@ class DiscChooser extends Component {
         let icoMaterial = new THREE.MeshLambertMaterial({ color: 0x165a8c });
 
         icohasedron = new THREE.Mesh(icohasedron, icoMaterial);
-        icohasedron.position.set(circle.position.x, circle.position.y + 20, circle.position.z);
+        icohasedron.position.set(circle.position.x, circle.position.y + 40, circle.position.z);
         icohasedron.material.wireframe = true;
         this.loadingFrontend.push(icohasedron);
 

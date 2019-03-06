@@ -28,17 +28,22 @@ class GenerateView(viewsets.ModelViewSet):
         self.generator.restore_gan(1000)
         generated_data = self.generator.generate_pointclouds()
 
-        return obj_wrapper(generated_data[rd.randint(0, 11)], object_class, 0), self.generator.interpolate(generated_data[0], generated_data[11], steps=12, write_file=False)
+        return obj_wrapper(generated_data[rd.randint(0, 11)], object_class, 0)
 
 
     def create(self, request, *args, **kwargs):
         object_class = request.query_params.get("object_class", None)
         
-        generated_obj, interpolations = self.generate(object_class)
+        generated_obj = self.generate(object_class)
+        interpolations_filenames = []
+        
+        # for i, element in enumerate(interpolations):
+        #     interpolations_filenames.append(element[0])
+
         created = GeneratedPC.objects.create(
             object_class = object_class,
-            generated = generated_obj,
-            interpolations = interpolations,
+            generated = generated_obj[0],
+            interpolations = interpolations_filenames,
             num_of_vertices = 2048
         )
 
@@ -47,6 +52,6 @@ class GenerateView(viewsets.ModelViewSet):
         return Response({
             'object_class': object_class,
             'num_of_vertices': 2048,
-            'generated': generated_obj,
-            'interpolations': interpolations,
+            'generated': generated_obj[0],
+            'interpolations': interpolations_filenames,
         })

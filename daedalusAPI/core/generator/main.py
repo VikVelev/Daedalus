@@ -175,7 +175,7 @@ class Generator:
         for i, interpolation in enumerate(self.interpolations):
             interpolation_array.append(obj_wrapper(interpolation, self.object_class + "_intr", i))
             #generate_mitsuba_xml(interpolation, self.object_class, i, variation=False)
-
+        
         return interpolation_array
 
 

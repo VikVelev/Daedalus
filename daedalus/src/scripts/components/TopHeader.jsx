@@ -38,13 +38,13 @@ class TopHeader extends Component {
                         </Header>
                     </Segment>
 
-                    <Icon className={"menuframe top settings icon " + (!this.props.store.settings.open ? "" : "hidden_button")}
+                    {/* <Icon className={"menuframe top settings icon " + (!this.props.store.settings.open ? "" : "hidden_button")}
                         name="setting" size="huge" 
                         onClick={this.toggleSMSettings}
                     />
                     <SettingsSlide store={this.props.store}
                                    profileOpen={this.props.store.settings.open} 
-                                   toggle={this.toggleSMSettings}/>
+                                   toggle={this.toggleSMSettings}/> */}
                 </div>
             </Transition>
         )

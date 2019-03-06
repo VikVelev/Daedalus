@@ -7,6 +7,8 @@ import re
 from six.moves import cPickle
 from multiprocessing import Pool
 import random
+import hashlib
+import time
 
 from . utils import rand_rotation_matrix
 from . plyfile import PlyElement, PlyData
@@ -73,7 +75,7 @@ def generate_mitsuba_xml(coords, class_name, frame, variation=False):
     xml.write(file)
     xml.close()
 
-def obj_wrapper(obj, class_name, id, write_file=False):
+def obj_wrapper(obj, class_name, id, write_file=True):
 
     lines = ""
 
@@ -81,11 +83,15 @@ def obj_wrapper(obj, class_name, id, write_file=False):
         lines += "v " + str(xyz[0]) + " " + str(xyz[1]) + " " + str(xyz[2]) + " #" + str(i + 1) + "\n"
 
     if write_file:
-        text_file = open("./generated/" + class_name + str(id) + ".obj", "w")
+        hash_name = hashlib.sha256()
+        hash_name.update(b'' + str.encode(str(time.time())))
+        text_file = open("./static/" + class_name + str(id) + hash_name.hexdigest() + ".obj", "w")
         text_file.write(lines)
         text_file.close()
+    #
+    name = class_name + str(id) + hash_name.hexdigest() + ".obj"
     
-    return lines
+    return name, lines
 
 def snc_category_to_synth_id():
     d = snc_synth_id_to_category
@@ -174,7 +180,7 @@ def pc_loader(f_name):
 def load_all_point_clouds_under_folder(top_dir, n_threads=20, file_ending='.ply', verbose=False):
 
     file_names = [f for f in files_in_subdirs(top_dir, file_ending)]
-    print(files_in_subdirs(top_dir, file_ending))
+    
     pclouds, model_ids, syn_ids = load_point_clouds_from_filenames(file_names, n_threads, loader=pc_loader, verbose=verbose)
     return PointCloudDataSet(pclouds, labels=syn_ids + '_' + model_ids, init_shuffle=False)
 
