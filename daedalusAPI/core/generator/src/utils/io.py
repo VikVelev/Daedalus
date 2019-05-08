@@ -75,8 +75,9 @@ def generate_mitsuba_xml(coords, class_name, frame, variation=False):
     xml.write(file)
     xml.close()
 
-def obj_wrapper(obj, class_name, id, write_file=True):
-
+def obj_wrapper(obj, class_name, id, write_file=True, path="./static/"):
+    
+    path += "%s" + str(id) + "%s" + ".obj"
     lines = ""
 
     for i, xyz in enumerate(obj):
@@ -85,7 +86,7 @@ def obj_wrapper(obj, class_name, id, write_file=True):
     if write_file:
         hash_name = hashlib.sha256()
         hash_name.update(b'' + str.encode(str(time.time())))
-        text_file = open("./static/" + class_name + str(id) + hash_name.hexdigest() + ".obj", "w")
+        text_file = open(path % (class_name, hash_name.hexdigest()), "w")
         text_file.write(lines)
         text_file.close()
     #

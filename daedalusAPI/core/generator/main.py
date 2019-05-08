@@ -49,9 +49,10 @@ class Generator:
     def init_train_ae(self, training_epochs):
 
         self.train_params = default_train_params()
-        self.ae.encoder, self.ae.decoder, self.ae.enc_args, self.ae.dec_args = autoencoder_paper(self.n_pc_points, self.bneck_size)
+        self.experiment_name, self.ae.encoder, self.ae.decoder, self.ae.enc_args, self.ae.dec_args = autoencoder_paper(self.experiment_name, self.n_pc_points, self.bneck_size)
 
         self.conf = Conf(
+            self.experiment_name,
             n_input = [self.n_pc_points, 3],
             loss = self.ae_loss,
             training_epochs = training_epochs,
@@ -139,7 +140,7 @@ class Generator:
             beta = self.gan.params['beta'],
         )
 
-        self.gan_model.restore_model("./models_checkpoints/", epoch, verbose=False)
+        self.gan_model.restore_model("/home/viktorv/Projects/Daedalus/daedalusAPI/core/generator/models_checkpoints/", epoch, verbose=False)
 
 
     
@@ -163,7 +164,7 @@ class Generator:
     def reconstruct_obj(self, reconstructions):
 
         for i, reconstruction in enumerate(reconstructions):
-            obj_wrapper(reconstruction, self.object_class, i)
+            obj_wrapper(reconstruction, self.object_class, i, path="./")
             
         #print("Reconstructed")
 
@@ -173,15 +174,17 @@ class Generator:
         interpolation_array = []
 
         for i, interpolation in enumerate(self.interpolations):
-            interpolation_array.append(obj_wrapper(interpolation, self.object_class + "_intr", i))
+            interpolation_array.append(obj_wrapper(interpolation, self.object_class + "_intr", i, path="./"))
             #generate_mitsuba_xml(interpolation, self.object_class, i, variation=False)
         
         return interpolation_array
 
 
 if __name__ == "__main__":
-    generator = Generator("single_class_ae", "chair")
-    generator.restore_ae(70)
+    generator = Generator("car_class_ae", "car")
+    generator.init_train_ae(200)
+    generator.train_ae()
+    #generator.restore_ae(60)
 
     from_int = rd.randint(0, 4000)
     to_int = rd.randint(0, 4000)
@@ -192,9 +195,10 @@ if __name__ == "__main__":
     # generator.reconstruct_obj(reconstruction_from[0])
     # generator.reconstruct_obj(reconstruction_to[0])
     generator.init_train_gan()
-    generator.restore_gan(1000)
-    generated_data = generator.generate_pointclouds()
+    generator.train_gan(2000)
+    #generator.restore_gan(2000)
+    generated_data = generator.generate_pointclouds(num=1)
 
     generator.reconstruct_obj(generated_data)
-    generator.interpolate(generated_data[0], generated_data[11], steps=33);
+    #generator.interpolate(generated_data[0], generated_data[11], steps=33);
 

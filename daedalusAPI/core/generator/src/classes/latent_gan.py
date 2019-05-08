@@ -5,7 +5,7 @@ import sys
 import os.path as osp
 import matplotlib.pylab as plt
 
-sys.path.append("/home/viktorv/Projects/3DMNN/main/models/latent_space/src")
+sys.path.append("/home/viktorv/Projects/Daedalus/daedalusAPI/core/generator/src")
 
 from classes.gan import GAN
 
@@ -21,6 +21,7 @@ class LatentGAN(GAN):
         # lam = lambda
         GAN.__init__(self, name, graph)
         
+        self.name = name
         self.noise_dim = noise_dim
         self.n_output = n_output
         self.discriminator = discriminator
@@ -130,7 +131,7 @@ class LatentGAN(GAN):
     def train(self, latent_codes, params, n_epochs, train_dir, save_gan_model=False, \
               plot_train_curve=True, n_syn_samples=5, saver_step=None, train_stats=None):
 
-        MODEL_SAVER_ID = 'models.ckpt'
+        MODEL_SAVER_ID = 'models.%s.ckpt' % self.name
 
         for _ in range(n_epochs):
             loss, duration = self._single_epoch_train(latent_codes, params['batch_size'], params['noise_params'])

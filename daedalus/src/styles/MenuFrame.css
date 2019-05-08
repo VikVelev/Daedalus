@@ -122,8 +122,8 @@
 }
 
 .generate_input {
-    width: 100% !important;
-}   
+    width: 200px !important;
+}
 
 .generate_button {
     margin-top:  10px !important;
@@ -200,3 +200,4 @@
 .clear_scene {
     margin-left: 5px !important;
 }
+

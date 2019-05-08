@@ -22,10 +22,10 @@ class GenerateView(viewsets.ModelViewSet):
 
     def generate(self, object_class):
 
-        self.generator = Generator("single_class_ae", object_class)
-        self.generator.restore_ae(70)
+        self.generator = Generator(object_class + "_class_ae", object_class)
+        self.generator.restore_ae(200)
         self.generator.init_train_gan()
-        self.generator.restore_gan(1000)
+        self.generator.restore_gan(2000)
         generated_data = self.generator.generate_pointclouds()
 
         return obj_wrapper(generated_data[rd.randint(0, 11)], object_class, 0)

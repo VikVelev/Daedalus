@@ -18,7 +18,7 @@ import warnings
 from scipy.stats import entropy
 import sys
 
-sys.path.append("/home/viktorv/Projects/3DMNN/main/models/latent_space")
+sys.path.append("/home/viktorv/Projects/Daedalus/daedalusAPI/core/generator")
 
 try:
     from cuda_losses.tf_nndistance import nn_distance
@@ -26,7 +26,7 @@ try:
 except:
     print("Error with CUDA compilation of the losses")
 
-sys.path.append("/home/viktorv/Projects/3DMNN/main/models/latent_space/src")
+sys.path.append("/home/viktorv/Projects/Daedalus/daedalusAPI/core/generator/src")
 
 from utils.utils import iterate_in_chunks, unit_cube_grid_point_cloud
 

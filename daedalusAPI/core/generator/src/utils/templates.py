@@ -1,7 +1,7 @@
 import numpy as np
 
 import sys
-sys.path.append("/home/viktorv/Projects/3DMNN/main/models/latent_space/src")
+sys.path.append("/home/viktorv/Projects/Daedalus/daedalusAPI/core/generator/src")
 
 from classes.encoders import encoder_with_convs_and_symmetry
 from classes.decoders import decoder_with_fc_only
@@ -29,7 +29,7 @@ def innofair_architecture(latent_vector_size):
 
     return generator, discriminator, params
 
-def autoencoder_paper(n_pc_points, bneck_size):
+def autoencoder_paper(experiment_name, n_pc_points, bneck_size):
     ''' Single class experiments.
     '''
     if n_pc_points != 2048:
@@ -45,17 +45,17 @@ def autoencoder_paper(n_pc_points, bneck_size):
         'filter_sizes': [1],
         'strides': [1],
         'b_norm': True,
-        'verbose': False
+        'verbose': False,
     }
 
     decoder_args = {
         'layer_sizes': [256, 256, np.prod(n_input)],
         'b_norm': False,
         'b_norm_finish': False,
-        'verbose': False
+        'verbose': False,
     }
 
-    return encoder, decoder, encoder_args, decoder_args
+    return experiment_name, encoder, decoder, encoder_args, decoder_args
 
 
 def default_train_params(single_class=True):

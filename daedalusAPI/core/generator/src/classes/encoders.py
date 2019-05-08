@@ -3,7 +3,7 @@ import numpy as np
 import warnings
 
 import sys
-sys.path.append("/home/viktorv/Projects/3DMNN/main/models/latent_space/src")
+sys.path.append("/home/viktorv/Projects/Daedalus/daedalusAPI/core/generator/src")
 
 from tflearn.layers.core import fully_connected, dropout
 from tflearn.layers.conv import conv_1d, avg_pool_1d

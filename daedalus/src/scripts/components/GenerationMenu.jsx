@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { observer } from 'mobx-react'
-import { Transition, Button, Input, Icon } from 'semantic-ui-react';
+import { Transition, Button, Input, Icon, Dropdown } from 'semantic-ui-react';
 import { autorun } from 'mobx';
 const electron = window.require('electron').remote;
 const fs = electron.require('fs');
@@ -11,8 +11,25 @@ class GenerationMenu extends Component {
 
     state = {
         leftArrow: false,
-        rightArrow: false
+        rightArrow: false,
+        currentQuery: "chair",
     }
+
+    modelOptions = [
+        {
+            key: "Airplane",
+            text: "Airplane",
+            value: "Airplane",
+        },{
+            key: "Car",
+            text: "Car",
+            value: "Car",
+        },{
+            key: "Chair",
+            text: "Chair",
+            value: "Chair",
+        },
+    ]
 
     constructor(props) {
         super(props);
@@ -29,9 +46,15 @@ class GenerationMenu extends Component {
     }
     
     loadModel = () => {
-        this.props.store.sendGenerateRequest();
+        if (this.props.store.currentQuery !== ""){
+            this.props.store.sendGenerateRequest();
+        }
     }
     
+    onChangeQuery = (e, {value}) => {
+        this.props.store.currentQuery = value.toLowerCase();
+    }
+
     clearScene = () => {
         // TODO: Write a better clear scene method
         electron.getCurrentWindow().reload();
@@ -70,14 +93,17 @@ class GenerationMenu extends Component {
                             </Button>
 
                             <div className="generation_options_container">
-                                <Input label={{ icon: 'asterisk' }} 
-                                    labelPosition='right corner' 
-                                    placeholder='Chair'
-                                    text="Chair"
-                                    input="Chair"
+                                <Dropdown
+                                    additionPosition='top'
+                                    upward
+                                    placeholder='Select a model class'
+                                    fluid
+                                    selection
+                                    onChange={this.onChangeQuery}
+                                    options={this.modelOptions}
                                     className="generate_input"
-                                    />
-                                <Button color="violet" size="huge" className="generate_button" onClick={this.loadModel}>
+                                />
+                                <Button disabled={this.props.store.currentQuery === ""}color="violet" size="huge" className="generate_button" onClick={this.loadModel}>
                                     Generate
                                 </Button>
 

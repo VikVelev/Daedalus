@@ -14,6 +14,7 @@ class Store {
     ] //Array of booleans showing which is loading
     @observable currentlyLoading = [] //Array of PointClouds which are loading   
     @observable currentlyChosenModel = 0; //index //TODO THink of a way for the program to start without any models (eg. index === undefined or null)
+    @observable currentQuery = "";
     @observable justStarted = true;
     @observable sceneRef = {};
     @observable chosenModelLink = ""
@@ -131,6 +132,10 @@ class Store {
     @action sendGenerateRequest(object_class) {
         if (object_class === undefined) {
             object_class = "chair"
+        }
+
+        if (this.currentQuery !== "") {
+            object_class = this.currentQuery;
         }
         
         let index = this.loadedModels.length

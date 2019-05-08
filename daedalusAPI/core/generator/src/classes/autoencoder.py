@@ -6,22 +6,22 @@ import numpy as np
 from tflearn import is_training
 
 import sys
-sys.path.append("/home/viktorv/Projects/3DMNN/main/models/latent_space/src")
+sys.path.append('/home/viktorv/Projects/Daedalus/daedalusAPI/core/generator/src')
+
 
 from utils.io import create_dir, pickle_data, unpickle_data
 from utils.utils import apply_augmentations, iterate_in_chunks
 from classes.neural_network import NeuralNetwork
 
-model_saver_id = 'models.ckpt'
-
 
 class Configuration():
-    def __init__(self, n_input, encoder, decoder, encoder_args={}, decoder_args={},
+    def __init__(self,  experiment_name, n_input, encoder, decoder, encoder_args={}, decoder_args={},
                  training_epochs=200, batch_size=10, learning_rate=0.001, denoising=False,
                  saver_step=None, train_dir=None, z_rotate=False, loss='chamfer', gauss_augment=None,
                  saver_max_to_keep=None, loss_display_step=1, debug=False,
                  n_z=None, n_output=None, latent_vs_recon=1.0, consistent_io=None):
 
+        self.model_saver_id = 'models.%s.ckpt' % experiment_name
         # Parameters for any AE
         self.n_input = n_input
         self.is_denoising = denoising
@@ -86,16 +86,16 @@ class AutoEncoder(NeuralNetwork):
     '''Basis class for a Neural Network that implements an Auto-Encoder in TensorFlow.
     '''
 
-    def __init__(self, name, graph, configuration):
-        NeuralNetwork.__init__(self, name, graph)
+    def __init__(self, experiment_name, graph, configuration):
+        NeuralNetwork.__init__(self, experiment_name, graph)
         self.is_denoising = configuration.is_denoising
         self.n_input = configuration.n_input
         self.n_output = configuration.n_output
-
+        self.model_saver_id = 'model.%s.cpkt'%experiment_name
         in_shape = [None] + self.n_input
         out_shape = [None] + self.n_output
 
-        with tf.variable_scope(name):
+        with tf.variable_scope(experiment_name):
             self.x = tf.placeholder(tf.float32, in_shape)
             if self.is_denoising:
                 self.gt = tf.placeholder(tf.float32, out_shape)
@@ -105,7 +105,7 @@ class AutoEncoder(NeuralNetwork):
     def restore_model(self, model_path, epoch, verbose=False):
         '''Restore all the variables of a saved auto-encoder model.
         '''
-        self.saver.restore(self.sess, osp.join(model_path, model_saver_id + '-' + str(int(epoch))))
+        self.saver.restore(self.sess, osp.join(model_path, self.model_saver_id + '-' + str(int(epoch))))
 
         if self.epoch.eval(session=self.sess) != epoch:
             warnings.warn('Loaded model\'s epoch doesn\'t match the requested one.')
@@ -193,7 +193,7 @@ class AutoEncoder(NeuralNetwork):
             # Save the models checkpoint periodically.
             if c.saver_step is not None and (epoch % c.saver_step == 0 or epoch - 1 == 0):
                 
-                checkpoint_path = osp.join(c.train_dir, model_saver_id)
+                checkpoint_path = osp.join(c.train_dir, self.model_saver_id)
                 self.saver.save(self.sess, checkpoint_path, global_step=self.epoch)
 
             if c.exists_and_is_not_none('summary_step') and (epoch % c.summary_step == 0 or epoch - 1 == 0):

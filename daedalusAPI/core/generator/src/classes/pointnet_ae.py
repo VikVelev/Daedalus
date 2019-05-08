@@ -7,7 +7,8 @@ from tflearn.layers.conv import conv_1d
 from tflearn.layers.core import fully_connected
 
 import sys
-sys.path.append("/home/viktorv/Projects/3DMNN/main/models/latent_space")
+sys.path.append('/home/viktorv/Projects/Daedalus/daedalusAPI/core/generator')
+
 
 from src.utils.io import create_dir
 from src.classes.autoencoder import AutoEncoder
@@ -18,6 +19,8 @@ try:
     from cuda_losses.tf_approxmatch import approx_match, match_cost
 except:
     print("Error with CUDA compilation of the losses")
+    print('??????????????????????????????????????????????')
+
 
 
 class PointNetAutoEncoder(AutoEncoder):

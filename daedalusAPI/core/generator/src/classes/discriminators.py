@@ -4,7 +4,7 @@ import warnings
 
 import sys
 
-sys.path.append("/home/viktorv/Projects/3DMNN/main/models/latent_space/src")
+sys.path.append("/home/viktorv/Projects/Daedalus/daedalusAPI/core/generator/src")
 
 from tflearn.layers.core import fully_connected
 from tflearn.activations import sigmoid, relu
