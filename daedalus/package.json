@@ -1,8 +1,8 @@
 {
   "name": "daedalus",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "private": true,
-  "main": "build/electron.js",
+  "main": "./src/electron.js",
   "homepage": "./",
   "dependencies": {
     "mobx": "^5.9.0",

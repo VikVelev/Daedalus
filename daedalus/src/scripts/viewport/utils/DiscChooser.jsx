@@ -1,23 +1,23 @@
 
-import { Component } from 'react'
-import { observer } from 'mobx-react'
+import { Component } from 'react';
+import { observer } from 'mobx-react';
 import * as THREE from 'three';
-import { rotateAroundWorldAxis, rotateAroundObjectAxis } from './MatrixRotation.jsx'
+import { rotateAroundWorldAxis, rotateAroundObjectAxis } from './MatrixRotation.jsx';
 //import { Loader } from 'semantic-ui-react';
 
 
-export function calculateCoordinates(index) {
+export function calculateCoordinates(index, currentlyChosenIndex = 0) {
 
     let coords = { x: 0, y: 0, rad: 0 };
     let center = { x: 0, y: 0 };
 
     let r = 2;
-    let h = (2/r);
-    let t = Math.asin(1 - ((h^2)/2));
+    let h = (r/7);
+    let t = -Math.asin(1 - ((h)/r));
 
     coords.rad = t;
-    coords.x = (center.x + r*Math.cos(t*index));
-    coords.y = -(center.y + r*Math.sin(t*index));
+    coords.x = (center.x + r*Math.cos(t*(index - currentlyChosenIndex)));
+    coords.y = -(center.y + r*Math.sin(t*(index - currentlyChosenIndex)));
 
     return coords;
 }
@@ -32,13 +32,13 @@ class DiscChooser extends Component {
     elements = new THREE.Object3D();
     pivot = new THREE.Group();
     rotating = false;
-    steps = 15;
+    steps = 0;
     target = { rad: 0, step: 0, rot: 0 };
 
     constructor(props){
         super(props);
-        //console.log(this.props);
         this.store = this.props
+        this.steps = this.store.maxLength * (12/(12/this.store.maxLength));
     }
 
     hideDisks() {

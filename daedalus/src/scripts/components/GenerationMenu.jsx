@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { observer } from 'mobx-react'
 import { Transition, Button, Input, Icon, Dropdown } from 'semantic-ui-react';
 import { autorun } from 'mobx';
+
 const electron = window.require('electron').remote;
 const fs = electron.require('fs');
 const ipcRenderer = electron.ipcRenderer;
@@ -31,14 +32,22 @@ class GenerationMenu extends Component {
         },
     ]
 
+    getOptionsIndex = (key) => {
+        for (let i = 0; i < this.modelOptions.length; i++) {
+            if(this.modelOptions[i].key.toLowerCase() === key) {
+                return i;
+            }
+        }
+    }
+
     constructor(props) {
         super(props);
 
         autorun(() => {
-            this.props.store.options.leftArrow = (this.props.store.loadedModels[this.props.store.currentlyChosenModel + 1] !== undefined)
-            this.props.store.options.rightArrow = (this.props.store.loadedModels[this.props.store.currentlyChosenModel - 1] !== undefined) 
+            this.props.store.options.leftArrow = ((this.props.store.loadedModels[this.props.store.currentlyChosenModel + 1] !== undefined))
+            this.props.store.options.rightArrow = ((this.props.store.loadedModels[this.props.store.currentlyChosenModel - 1] !== undefined))
 
-            if(this.props.store.loadedModels.length === 12) {
+            if(this.props.store.loadedModels.length === this.props.store.maxLength) {
                 this.props.store.options.leftArrow = true;
                 this.props.store.options.rightArrow = true;
             }
@@ -101,10 +110,23 @@ class GenerationMenu extends Component {
                                     selection
                                     onChange={this.onChangeQuery}
                                     options={this.modelOptions}
+                                    value={
+                                        this.getOptionsIndex(this.props.store.currentQuery) !== undefined ?
+                                        this.modelOptions[this.getOptionsIndex(this.props.store.currentQuery)].value : ""
+                                    }
                                     className="generate_input"
                                 />
-                                <Button disabled={this.props.store.currentQuery === ""}color="violet" size="huge" className="generate_button" onClick={this.loadModel}>
-                                    Generate
+                                
+                                <Button disabled={
+                                                this.props.store.currentQuery === "" 
+                                                || this.props.store.awaitingResponse 
+                                                || this.props.store.loadedModels.length + 1 > this.props.store.maxLength
+                                    } color="violet" size="huge" className="generate_button" onClick={this.loadModel}>
+                                    {
+                                        this.props.store.awaitingResponse ? "Generating..." : 
+                                        this.props.store.loadedModels.length + 1 > this.props.store.maxLength ? "No space" : 
+                                        "Generate"
+                                    }
                                 </Button>
 
                             </div>

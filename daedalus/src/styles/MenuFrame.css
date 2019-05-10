@@ -5,7 +5,8 @@
 
 .generation, .preview {
     padding-top: 1.5em !important;
-    top: -1.4em;
+    /* This top should be changed when adding profile functionality. TODO:// DEBUG CSS */
+    top: -0.4em;
     right: 50%;
     width: 200px;
     text-align: center;

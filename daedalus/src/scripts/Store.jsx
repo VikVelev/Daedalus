@@ -9,8 +9,9 @@ class Store {
     //Stack with indices directly coresponding to the arrays above, indicating and controlling loadability of models
     @observable indexStack = {}; // This also allows me to refer to a certain index just by it's point cloud    
     @observable reverseIndexStack = {};
+    @observable maxLength = 6; // Length of the currentlyLoadingBool should be the same as this one
     @observable currentlyLoadingBool = [
-        false, false, false, false, false, false, false, false, false, false, false, false
+        false, false, false, false, false, false,/* false, false, false, false, false, false */
     ] //Array of booleans showing which is loading
     @observable currentlyLoading = [] //Array of PointClouds which are loading   
     @observable currentlyChosenModel = 0; //index //TODO THink of a way for the program to start without any models (eg. index === undefined or null)
@@ -19,6 +20,7 @@ class Store {
     @observable sceneRef = {};
     @observable chosenModelLink = ""
     @observable state = "PREVIEW"
+    @observable awaitingResponse = false;
     @observable stateTable = {
         "GENERATION" : "PREVIEW",
         "PREVIEW" : "GENERATION"
@@ -142,10 +144,13 @@ class Store {
         this.currentlyLoadingBool[index] = true;
 
         let xhttp = new XMLHttpRequest();
+        this.awaitingResponse = true;
         xhttp.onreadystatechange = (r) => {
             if (xhttp.readyState === 4 && xhttp.status === 200) {
                 let response = JSON.parse(xhttp.responseText)
                 this.loadModel("http://fortress88.servebeer.com:8000/static/" + response.generated, this.loadedModels.length);
+            } else if(xhttp.status === 400 || xhttp.status === 500) {
+                this.awaitingResponse = false;
             }
         };
         xhttp.open("POST", "http://fortress88.servebeer.com:8000/api/generate/?object_class=" + object_class, true)

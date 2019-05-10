@@ -61,12 +61,12 @@ export default class PointCloud {
 
     callbackOnProgress = (data) => {
         //TODO: Loading animation/screen
-        console.log(data);
+        //console.log(data);
     }
 
     callbackOnError = (data) => {
         //TODO: Error handling
-        console.log(data);
+        //console.log(data);
     }
 
 
@@ -88,7 +88,7 @@ export default class PointCloud {
             object = this.convertToSphereCloud(this.vertices);
         }
 
-        let coords = calculateCoordinates(this.store.indexStack[this.filename]);
+        let coords = calculateCoordinates(this.store.indexStack[this.filename], this.store.currentlyChosenModel);
 
         object.position.x = coords.x * this.scale;
         object.position.z = coords.y * this.scale;
@@ -98,7 +98,8 @@ export default class PointCloud {
         this.scene.add(object);
         this.scene_objects.push(object);
         this.store.addLoaded(object, this);
-        this.store.__chooseModelINIT(0, this);
+        this.store.awaitingResponse = false;
+        //this.store.__chooseModelINIT(0, this);
         //Calculate object coordinates based on index
     }
 
@@ -182,15 +183,17 @@ export default class PointCloud {
         }
 
         let LOD = new THREE.LOD();
+        
+        let steps = 1
 
-        for (let i = 0; i <= 2; i++) {
+        for (let i = 0; i <= steps; i++) {
 
             let level = new THREE.Group();
 
             vertices.forEach(point => {
                 
                 //TODO: Customization of point visualization -> sphere/cube/prism w/e;
-                let geometry = new IcosahedronBufferGeometry(this.scale/80, 2 - i);
+                let geometry = new IcosahedronBufferGeometry(this.scale/80, steps - i);
                 let material = new MeshLambertMaterial({ color: 0x0055ff });
 
                 let sphere = new Mesh(geometry, material);

@@ -22,14 +22,14 @@ class TopHeader extends Component {
         return (
             <Transition visible={this.props.visible} animation='fly down' duration={500}>
                 <div>
-                    <Icon 
+                    {/* <Icon 
                         className={"menuframe top profile icon " + (!this.props.store.profile.open ? "" : "hidden_button")}
                         name="user circle" size="huge"
                         onClick={this.toggleSMProfile}
                     />
                     <ProfileSlide store={this.props.store} 
                                   profileOpen={this.props.store.profile.open} 
-                                  toggle={this.toggleSMProfile}/>
+                                  toggle={this.toggleSMProfile}/> */}
 
                     <Segment color="violet"
                              className={"menuframe top " + this.props.type.toLowerCase()} >

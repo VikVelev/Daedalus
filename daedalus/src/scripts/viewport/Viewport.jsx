@@ -60,7 +60,7 @@ class Viewport extends Component {
 
 		this.chooser = new DiskChooser(this.props.store);
 		
-		for (let i = 0; i < 12; i++) {
+		for (let i = 0; i < this.props.store.maxLength; i++) {
 			this.chooser.generateDisc(i); //see?
 		}
 
@@ -79,7 +79,9 @@ class Viewport extends Component {
 		});
 
 		//Everytime the chosen model changes, change the selected shit
+		//ops here
 		autorun(() => {
+
 			for (let i = 0; i < this.props.store.loadedModels.length; i++) {
 
 				let chosen = this.props.store.currentlyChosenModel;
