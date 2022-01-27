@@ -15,7 +15,7 @@
     "react-scripts": "2.1.5",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.85.0",
-    "three": "^0.101.1",
+    "three": "^0.137.0",
     "three-transform-controls": "^1.0.4",
     "three-transformcontrols": "^0.78.1",
     "threejs-controls": "^1.0.6",
